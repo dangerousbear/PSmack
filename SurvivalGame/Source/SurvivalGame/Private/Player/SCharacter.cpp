@@ -64,6 +64,8 @@ ASCharacter::ASCharacter(const class FObjectInitializer& ObjectInitializer)
 	HungerDamagePerInterval = 1.0f;
 	MaxHunger = 100;
 	Hunger = 0;
+	XP = 0;
+	Level = 1;
 
 	/* Names as specified in the character skeleton */
 	WeaponAttachPoint = TEXT("WeaponSocket");
@@ -276,6 +278,7 @@ void ASCharacter::OnEndTargeting()
 
 void ASCharacter::OnJump()
 {
+  IncrementXP(25.0);
 	SetIsJumping(true);
 }
 
@@ -390,6 +393,16 @@ void ASCharacter::OnCrouchToggle()
 	}
 }
 
+float ASCharacter::GetXP() const
+{
+	return XP;
+}
+
+float ASCharacter::GetMaxXPForLevel() const
+{
+	return 200.0;
+}
+
 
 float ASCharacter::GetHunger() const
 {
@@ -433,6 +446,21 @@ void ASCharacter::IncrementHunger()
 	}
 }
 
+void ASCharacter::IncrementXP(float Value) {
+  XP += Value;
+  if (XP > GetMaxXPForLevel()) {
+    LevelUp();
+  }
+}
+
+void ASCharacter::LevelUp() {
+  const auto MaxXPForLevel = GetMaxXPForLevel();
+  if (XP > MaxXPForLevel) {
+    XP -= MaxXPForLevel;
+    ++Level;
+		SprintingSpeedModifier *= 1.5;
+  }
+}
 
 void ASCharacter::OnDeath(float KillingDamage, FDamageEvent const& DamageEvent, APawn* PawnInstigator, AActor* DamageCauser)
 {

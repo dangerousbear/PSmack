@@ -142,6 +142,16 @@ public:
 	void OnEndTargeting();
 
 	/************************************************************************/
+	/* Experience                                                           */
+	/************************************************************************/
+
+	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
+	float GetXP() const;
+
+	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
+	float GetMaxXPForLevel() const;
+
+	/************************************************************************/
 	/* Hunger                                                               */
 	/************************************************************************/
 
@@ -176,6 +186,18 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "PlayerCondition")
 	float HungerDamagePerInterval;
+
+	UPROPERTY(EditDefaultsOnly, Category = "PlayerCondition", Replicated)
+	float XP;
+
+	UPROPERTY(EditDefaultsOnly, Category = "PlayerCondition", Replicated)
+	int Level;
+
+	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
+	void IncrementXP(float Value);
+
+	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
+	void LevelUp();
 
 	/* Damage type applied when player suffers critical hunger */
 	UPROPERTY(EditDefaultsOnly, Category = "PlayerCondition")
