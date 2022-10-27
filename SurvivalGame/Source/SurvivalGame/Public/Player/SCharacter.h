@@ -151,6 +151,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
 	float GetMaxXPForLevel() const;
 
+	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
+	int GetLevel() const;
+
 	/************************************************************************/
 	/* Hunger                                                               */
 	/************************************************************************/

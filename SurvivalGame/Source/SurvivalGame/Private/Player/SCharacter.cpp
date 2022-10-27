@@ -403,6 +403,11 @@ float ASCharacter::GetMaxXPForLevel() const
 	return 200.0;
 }
 
+int ASCharacter::GetLevel() const
+{
+	return Level;
+}
+
 
 float ASCharacter::GetHunger() const
 {
