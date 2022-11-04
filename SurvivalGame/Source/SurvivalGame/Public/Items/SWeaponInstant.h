@@ -14,6 +14,9 @@ class SURVIVALGAME_API ASWeaponInstant : public ASWeapon
 {
 	GENERATED_BODY()
 
+public:
+	void SetDamageScale(float Scale);
+
 private:
 
 	/************************************************************************/
@@ -93,6 +96,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	float HitDamage;
+
+	UPROPERTY(EditDefaultsOnly)
+	float DamageScale;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class UDamageType> DamageType;

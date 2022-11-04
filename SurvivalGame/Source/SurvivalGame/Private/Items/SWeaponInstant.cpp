@@ -16,12 +16,17 @@
 ASWeaponInstant::ASWeaponInstant()
 {
 	HitDamage = 26;
+	DamageScale = 1;
 	WeaponRange = 15000;
 
 	AllowedViewDotHitDir = -1.0f;
 	ClientSideHitLeeway = 200.0f;
 	MinimumProjectileSpawnDistance = 800;
 	TracerRoundInterval = 3;
+}
+
+void ASWeaponInstant::SetDamageScale(float Scale) {
+  DamageScale = Scale;
 }
 
 
@@ -74,7 +79,7 @@ bool ASWeaponInstant::ShouldDealDamage(AActor* TestActor) const
 
 void ASWeaponInstant::DealDamage(const FHitResult& Impact, const FVector& ShootDir)
 {
-	float ActualHitDamage = HitDamage;
+	float ActualHitDamage = HitDamage * DamageScale;
 
 	/* Handle special damage location on the zombie body (types are setup in the Physics Asset of the zombie */
 	USDamageType* DmgType = Cast<USDamageType>(DamageType->GetDefaultObject());
@@ -98,6 +103,9 @@ void ASWeaponInstant::DealDamage(const FHitResult& Impact, const FVector& ShootD
 	PointDmg.Damage = ActualHitDamage;
 
 	Impact.GetActor()->TakeDamage(PointDmg.Damage, PointDmg, MyPawn->Controller, this);
+  if (auto playerPtr = dynamic_cast<ASCharacter*>(GetInstigator()) ) {
+		playerPtr->LifeStealFromDamage(PointDmg.Damage);
+  }
 }
 
 

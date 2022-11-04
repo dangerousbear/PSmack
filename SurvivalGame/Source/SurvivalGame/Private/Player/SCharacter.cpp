@@ -2,6 +2,7 @@
 
 
 #include "Player/SCharacter.h"
+#include "Player/STalentTree.h"
 
 #include "TimerManager.h"
 #include "Items/SUsableActor.h"
@@ -16,7 +17,6 @@
 #include "SurvivalGame/SurvivalGame.h"
 #include "GameFramework/DamageType.h"
 #include "Camera/CameraComponent.h"
-
 
 // Sets default values
 ASCharacter::ASCharacter(const class FObjectInitializer& ObjectInitializer)
@@ -66,6 +66,8 @@ ASCharacter::ASCharacter(const class FObjectInitializer& ObjectInitializer)
 	Hunger = 0;
 	XP = 0;
 	Level = 1;
+  bIsTalentTreeOpen = false;
+	TalentLevels = std::vector<int>(3, 0);
 
 	/* Names as specified in the character skeleton */
 	WeaponAttachPoint = TEXT("WeaponSocket");
@@ -463,8 +465,27 @@ void ASCharacter::LevelUp() {
   if (XP > MaxXPForLevel) {
     XP -= MaxXPForLevel;
     ++Level;
-		SprintingSpeedModifier *= 1.5;
+    SkillPointsAvailable += 3;
   }
+}
+
+void ASCharacter::SetSkillPointsAvailable(const int N) {
+  SkillPointsAvailable = N;
+}
+
+int ASCharacter::GetSkillPointsAvailable() const {
+  return SkillPointsAvailable;
+}
+
+void ASCharacter::IncrementTalent(int Index) {
+  ++TalentLevels.at(Index);
+  if (Index == 0) {
+    SprintingSpeedModifier *= 2.0;
+  }
+}
+
+void ASCharacter::LifeStealFromDamage(float Damage) {
+  Health += Damage * TalentLevels.at(2) * 0.1;
 }
 
 void ASCharacter::OnDeath(float KillingDamage, FDamageEvent const& DamageEvent, APawn* PawnInstigator, AActor* DamageCauser)
@@ -480,17 +501,26 @@ void ASCharacter::OnDeath(float KillingDamage, FDamageEvent const& DamageEvent, 
 	Super::OnDeath(KillingDamage, DamageEvent, PawnInstigator, DamageCauser);
 }
 
+bool ASCharacter::IsTalentTreeOpen() const
+{
+	return bIsTalentTreeOpen;
+}
+
+void ASCharacter::SetIsTalentTreeOpen(bool value)
+{
+	bIsTalentTreeOpen = value;
+}
 
 bool ASCharacter::CanFire() const
 {
 	/* Add your own checks here, for example non-shooting areas or checking if player is in an NPC dialogue etc. */
-	return IsAlive();
+	return IsAlive() && !IsTalentTreeOpen();
 }
 
 
 bool ASCharacter::CanReload() const
 {
-	return IsAlive();
+	return IsAlive() && !IsTalentTreeOpen();
 }
 
 

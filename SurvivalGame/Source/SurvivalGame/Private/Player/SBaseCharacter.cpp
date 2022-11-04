@@ -51,7 +51,6 @@ bool ASBaseCharacter::IsAlive() const
 }
 
 
-
 float ASBaseCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
 {
 	if (Health <= 0.f)

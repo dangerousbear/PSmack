@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <vector>
 #include "CoreMinimal.h"
 #include "Player/SBaseCharacter.h"
 #include "SCharacter.generated.h"
@@ -196,11 +197,23 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "PlayerCondition", Replicated)
 	int Level;
 
+	UPROPERTY(EditDefaultsOnly, Category = "PlayerCondition", Replicated)
+  int SkillPointsAvailable;
+
 	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
 	void IncrementXP(float Value);
 
 	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
 	void LevelUp();
+
+	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
+	int GetSkillPointsAvailable() const;
+
+	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
+  void SetSkillPointsAvailable(int N);
+
+	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
+	void IncrementTalent(int index);
 
 	/* Damage type applied when player suffers critical hunger */
 	UPROPERTY(EditDefaultsOnly, Category = "PlayerCondition")
@@ -215,6 +228,8 @@ public:
 	virtual void Suicide();
 
 	virtual void KilledBy(class APawn* EventInstigator);
+
+	void LifeStealFromDamage(float damage);
 
 	/************************************************************************/
 	/* Weapons & Inventory                                                  */
@@ -235,6 +250,10 @@ private:
 	FName SpineAttachPoint;
 
 	bool bWantsToFire;
+
+  bool bIsTalentTreeOpen;
+
+  std::vector<int> TalentLevels;
 
 	/* Distance away from character when dropping inventory items. */
 	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
@@ -283,6 +302,12 @@ public:
 
 	/* Check if the specified slot is available, limited to one item per type (primary, secondary) */
 	bool WeaponSlotAvailable(EInventorySlot CheckSlot);
+
+  UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
+  bool IsTalentTreeOpen() const;
+
+  UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
+  void SetIsTalentTreeOpen(bool value);
 
 	/* Check if pawn is allowed to fire weapon */
 	bool CanFire() const;
