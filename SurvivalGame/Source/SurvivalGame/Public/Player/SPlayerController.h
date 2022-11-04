@@ -15,10 +15,13 @@ enum class EHUDMessage : uint8
 
 	/* Character */
 	Character_EnergyRestored,
+	Character_LevelUp,
 
 	/* Gamemode */
 	Game_SurviveStart,
 	Game_SurviveEnded,
+
+
 
 	/* No category specified */
 	None,

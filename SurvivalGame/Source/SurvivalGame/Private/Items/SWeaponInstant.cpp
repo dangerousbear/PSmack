@@ -103,7 +103,7 @@ void ASWeaponInstant::DealDamage(const FHitResult& Impact, const FVector& ShootD
 	PointDmg.Damage = ActualHitDamage;
 
 	Impact.GetActor()->TakeDamage(PointDmg.Damage, PointDmg, MyPawn->Controller, this);
-  if (auto playerPtr = dynamic_cast<ASCharacter*>(GetInstigator()) ) {
+  if (auto playerPtr = Cast<ASCharacter>(GetInstigator()) ) {
 		playerPtr->LifeStealFromDamage(PointDmg.Damage);
   }
 }

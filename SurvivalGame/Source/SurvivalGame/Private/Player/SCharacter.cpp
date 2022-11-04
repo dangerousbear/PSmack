@@ -467,6 +467,10 @@ void ASCharacter::LevelUp() {
     ++Level;
     SkillPointsAvailable += 3;
   }
+	if (auto PC = Cast<ASPlayerController>(Controller))
+	{
+		PC->ClientHUDMessage(EHUDMessage::Character_LevelUp);
+	}
 }
 
 void ASCharacter::SetSkillPointsAvailable(const int N) {
@@ -485,7 +489,8 @@ void ASCharacter::IncrementTalent(int Index) {
 }
 
 void ASCharacter::LifeStealFromDamage(float Damage) {
-  Health += Damage * TalentLevels.at(2) * 0.1;
+  IncrementXP(0.1 * Damage);
+  Health = FMath::Clamp(Health + Damage * TalentLevels.at(2) * 0.1f, 0.0f, GetMaxHealth());
 }
 
 void ASCharacter::OnDeath(float KillingDamage, FDamageEvent const& DamageEvent, APawn* PawnInstigator, AActor* DamageCauser)

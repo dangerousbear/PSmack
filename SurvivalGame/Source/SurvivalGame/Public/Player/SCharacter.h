@@ -229,7 +229,7 @@ public:
 
 	virtual void KilledBy(class APawn* EventInstigator);
 
-	void LifeStealFromDamage(float damage);
+	void LifeStealFromDamage(float Damage);
 
 	/************************************************************************/
 	/* Weapons & Inventory                                                  */
