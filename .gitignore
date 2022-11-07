@@ -14,6 +14,7 @@ DerivedDataCache
 *.debug
 SurvivalGame/Binaries/Win64/SurvivalGame.exp
 SurvivalGame/Binaries/Win64/SurvivalGame.lib
+SurvivalGame/Binaries/Win64/UE4Editor-SurvivalGame.dll
 SurvivalGame/Releases
 *.log
 *.target.xml
