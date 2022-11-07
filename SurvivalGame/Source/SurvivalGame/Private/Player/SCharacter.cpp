@@ -7,6 +7,7 @@
 #include "TimerManager.h"
 #include "Items/SUsableActor.h"
 #include "Items/SWeapon.h"
+#include "Items/SWeaponInstant.h"
 #include "Items/SWeaponPickup.h"
 #include "Components/SCharacterMovementComponent.h"
 #include "Components/SCarryObjectComponent.h"
@@ -280,7 +281,7 @@ void ASCharacter::OnEndTargeting()
 
 void ASCharacter::OnJump()
 {
-  IncrementXP(25.0);
+  IncrementXP(100.0);
 	SetIsJumping(true);
 }
 
@@ -483,8 +484,17 @@ int ASCharacter::GetSkillPointsAvailable() const {
 
 void ASCharacter::IncrementTalent(int Index) {
   ++TalentLevels.at(Index);
-  if (Index == 0) {
+  switch (Index) {
+  case 0:
     SprintingSpeedModifier *= 2.0;
+    break;
+  case 1:
+    if (auto w = Cast<ASWeaponInstant>(GetCurrentWeapon())) {
+      w->SetDamageScale(1.0 + 0.1 * TalentLevels.at(1));
+    }
+    break;
+  default:
+    break;
   }
 }
 

@@ -10,6 +10,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "AI/SZombieCharacter.h"
 
 
 
@@ -102,9 +103,12 @@ void ASWeaponInstant::DealDamage(const FHitResult& Impact, const FVector& ShootD
 	PointDmg.ShotDirection = ShootDir;
 	PointDmg.Damage = ActualHitDamage;
 
+
 	Impact.GetActor()->TakeDamage(PointDmg.Damage, PointDmg, MyPawn->Controller, this);
-  if (auto playerPtr = Cast<ASCharacter>(GetInstigator()) ) {
-		playerPtr->LifeStealFromDamage(PointDmg.Damage);
+  if (auto playerPtr = Cast<ASCharacter>(GetInstigator())) {
+    if (Cast<ASZombieCharacter>(Impact.GetActor()) != nullptr) {
+      playerPtr->LifeStealFromDamage(PointDmg.Damage);
+    }
   }
 }
 

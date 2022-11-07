@@ -38,13 +38,13 @@ ASGameMode::ASGameMode()
 
 	/* Start the game at 16:00 */
 	TimeOfDayStart = 16 * 60;
-	BotSpawnInterval = 5.0f;
+	BotSpawnInterval = 0.1f;
 
 	/* Default team is 1 for players and 0 for enemies */
 	PlayerTeamNum = 1;
 
 	// You may want to make this number dynamic as players survived multiple nights
-	MaxPawnsInZone = 20;
+	MaxPawnsInZone = 200;
 }
 
 
@@ -301,7 +301,10 @@ void ASGameMode::SpawnNewBot()
 		return;
 	}
 
-	GetWorld()->SpawnActor<APawn>(BotPawnClass, SpawnTransform);
+	auto NewBot = GetWorld()->SpawnActor<APawn>(BotPawnClass, SpawnTransform);
+  if (auto NewZombie = Cast<ASZombieCharacter>(NewBot) ) {
+  
+  }
 }
 
 /* Used by RestartPlayer() to determine the pawn to create and possess when a bot or player spawns */
