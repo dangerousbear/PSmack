@@ -491,6 +491,8 @@ void ASCharacter::IncrementTalent(int Index) {
   case 1:
     if (auto w = Cast<ASWeaponInstant>(GetCurrentWeapon())) {
       w->SetDamageScale(1.0 + 0.1 * TalentLevels.at(1));
+			w->ScaleShotsPerMinute(1.1);
+			w->ScaleMaxAmmoInClip(1.1);
     }
     break;
   default:

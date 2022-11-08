@@ -30,7 +30,6 @@ void ASWeaponInstant::SetDamageScale(float Scale) {
   DamageScale = Scale;
 }
 
-
 void ASWeaponInstant::FireWeapon()
 {	
 	const FVector AimDir = GetAdjustedAim();

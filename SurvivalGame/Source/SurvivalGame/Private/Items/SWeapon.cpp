@@ -8,6 +8,8 @@
 #include "Player/SPlayerController.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "TimerManager.h"
+#include <Kismet/GameplayStatics.h>
+#include <SurvivalGame/SurvivalGame.h>
 
 
 ASWeapon::ASWeapon()
@@ -51,6 +53,17 @@ void ASWeapon::PostInitializeComponents()
 	TimeBetweenShots = 60.0f / ShotsPerMinute;
 	CurrentAmmo = FMath::Min(StartAmmo, MaxAmmo);
 	CurrentAmmoInClip = FMath::Min(MaxAmmoPerClip, StartAmmo);
+}
+
+void ASWeapon::ScaleShotsPerMinute(float Factor)
+{
+	ShotsPerMinute *= Factor;
+	TimeBetweenShots = 60.0f / ShotsPerMinute;
+}
+
+void ASWeapon::ScaleMaxAmmoInClip(float Factor)
+{
+	MaxAmmoPerClip = static_cast<int32>(Factor * MaxAmmoPerClip);
 }
 
 
@@ -495,7 +508,7 @@ UAudioComponent* ASWeapon::PlayWeaponSound(USoundCue* SoundToPlay)
 	UAudioComponent* AC = nullptr;
 	if (SoundToPlay && MyPawn)
 	{
-		AC = UGameplayStatics::SpawnSoundAttached(SoundToPlay, MyPawn->GetRootComponent());
+    //AC = UGameplayStatics::SpawnSoundAttached(SoundToPlay, MyPawn->GetRootComponent());
 	}
 
 	return AC;

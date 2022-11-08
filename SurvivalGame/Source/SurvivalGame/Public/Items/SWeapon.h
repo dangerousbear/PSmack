@@ -83,6 +83,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	USkeletalMeshComponent* GetWeaponMesh() const;
 
+	void ScaleShotsPerMinute(float Factor);
+
+	void ScaleMaxAmmoInClip(float Factor);
+
 	virtual void OnUnEquip();
 
 	void OnEquip(bool bPlayAnimation);
