@@ -193,10 +193,10 @@ private:
 	void OnRep_BurstCounter();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
-	USoundCue* FireSound;
+	USoundBase* FireSound;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
-	USoundCue* EquipSound;
+	USoundBase* EquipSound;
 
 	UPROPERTY(EditDefaultsOnly)
 	UParticleSystem* MuzzleFX;
@@ -228,7 +228,7 @@ protected:
 
 	FVector GetMuzzleDirection() const;
 
-	UAudioComponent* PlayWeaponSound(USoundCue* SoundToPlay);
+	UAudioComponent* PlayWeaponSound(USoundBase* SoundToPlay);
 
 	float PlayWeaponAnimation(UAnimMontage* Animation, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
 
@@ -241,7 +241,7 @@ protected:
 private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
-	USoundCue* OutOfAmmoSound;
+	USoundBase* OutOfAmmoSound;
 
 	FTimerHandle TimerHandle_ReloadWeapon;
 
@@ -279,7 +279,7 @@ protected:
 	int32 MaxAmmoPerClip;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
-	USoundCue* ReloadSound;
+	USoundBase* ReloadSound;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* ReloadAnim;

@@ -8,8 +8,8 @@
 #include "Player/SPlayerController.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "TimerManager.h"
-#include <Kismet/GameplayStatics.h>
-#include <SurvivalGame/SurvivalGame.h>
+#include "Kismet/GameplayStatics.h"
+#include "SurvivalGame/SurvivalGame.h"
 
 
 ASWeapon::ASWeapon()
@@ -503,12 +503,12 @@ FVector ASWeapon::GetMuzzleDirection() const
 }
 
 
-UAudioComponent* ASWeapon::PlayWeaponSound(USoundCue* SoundToPlay)
+UAudioComponent* ASWeapon::PlayWeaponSound(USoundBase* SoundToPlay)
 {
 	UAudioComponent* AC = nullptr;
 	if (SoundToPlay && MyPawn)
 	{
-    //AC = UGameplayStatics::SpawnSoundAttached(SoundToPlay, MyPawn->GetRootComponent());
+    AC = UGameplayStatics::SpawnSoundAttached(SoundToPlay, MyPawn->GetRootComponent(), NAME_None, FVector(ForceInit), FRotator::ZeroRotator);
 	}
 
 	return AC;
