@@ -38,13 +38,13 @@ ASGameMode::ASGameMode()
 
 	/* Start the game at 16:00 */
 	TimeOfDayStart = 16 * 60;
-	BotSpawnInterval = 0.1f;
+	BotSpawnInterval = 0.5f;
 
 	/* Default team is 1 for players and 0 for enemies */
 	PlayerTeamNum = 1;
 
 	// You may want to make this number dynamic as players survived multiple nights
-	MaxPawnsInZone = 200;
+	MaxPawnsInZone = 20;
 }
 
 
@@ -385,12 +385,23 @@ void ASGameMode::SpawnBotHandler()
 
 void ASGameMode::OnNightEnded()
 {
-	// Do nothing (can be used to apply score or trigger other time of day events)
+  const auto increaseFactor = 1.2;
+  MaxPawnsInZone = static_cast<int32>(increaseFactor * MaxPawnsInZone);
+  BotSpawnInterval /= increaseFactor;
+  for (TActorIterator<APawn> It(GetWorld()); It; ++It)
+  {
+    if (auto Player = Cast<ASCharacter>(*It)) {
+      Player->IncrementXP(100.0);
+      if (auto MyGameState = Cast<ASGameState>(GameState))
+      {
+        MyGameState->ElapsedGameMinutes = TimeOfDayStart;
+      }
+    }
+  }
 }
 
 void ASGameMode::Killed(AController* Killer, AController* VictimPlayer, APawn* VictimPawn, const UDamageType* DamageType)
 {
-	// Do nothing (can we used to apply score or keep track of kill count)
 }
 
 

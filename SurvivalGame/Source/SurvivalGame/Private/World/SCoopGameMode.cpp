@@ -143,6 +143,13 @@ void ASCoopGameMode::Killed(AController* Killer, AController* VictimPlayer, APaw
 	{
 		KillerPS->AddKill();
 		KillerPS->ScorePoints(10);
+
+		for (TActorIterator<APawn> It(GetWorld()); It; ++It)
+		{
+			if (auto Player = Cast<ASCharacter>(*It)) {
+				Player->IncrementXP(5.0);
+			}
+		}
 	}
 
 	if (VictimPS && !VictimPS->IsABot())

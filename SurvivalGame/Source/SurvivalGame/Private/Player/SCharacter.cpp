@@ -501,7 +501,7 @@ void ASCharacter::IncrementTalent(int Index) {
 }
 
 void ASCharacter::LifeStealFromDamage(float Damage) {
-  IncrementXP(0.1 * Damage);
+  IncrementXP(0.01 * Damage);
   Health = FMath::Clamp(Health + Damage * TalentLevels.at(2) * 0.1f, 0.0f, GetMaxHealth());
 }
 
