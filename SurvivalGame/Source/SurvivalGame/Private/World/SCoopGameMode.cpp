@@ -122,6 +122,7 @@ void ASCoopGameMode::OnNightEnded()
 				ASCharacter* MyPawn = Cast<ASCharacter>(MyController->GetPawn());
 				if (MyPawn && MyPawn->IsAlive())
 				{
+					MyPawn->IncrementXP(100.0);
 					ASPlayerState* PS = Cast<ASPlayerState>(MyController->PlayerState);
 					if (PS)
 					{
@@ -131,6 +132,9 @@ void ASCoopGameMode::OnNightEnded()
 			}
 		}
 	}
+	const auto increaseFactor = 1.2;
+	MaxPawnsInZone = static_cast<int32>(increaseFactor * MaxPawnsInZone);
+	BotSpawnInterval /= increaseFactor;
 }
 
 

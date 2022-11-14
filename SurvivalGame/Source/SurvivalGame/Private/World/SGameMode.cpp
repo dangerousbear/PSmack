@@ -385,19 +385,6 @@ void ASGameMode::SpawnBotHandler()
 
 void ASGameMode::OnNightEnded()
 {
-  const auto increaseFactor = 1.2;
-  MaxPawnsInZone = static_cast<int32>(increaseFactor * MaxPawnsInZone);
-  BotSpawnInterval /= increaseFactor;
-  for (TActorIterator<APawn> It(GetWorld()); It; ++It)
-  {
-    if (auto Player = Cast<ASCharacter>(*It)) {
-      Player->IncrementXP(100.0);
-      if (auto MyGameState = Cast<ASGameState>(GameState))
-      {
-        MyGameState->ElapsedGameMinutes = TimeOfDayStart;
-      }
-    }
-  }
 }
 
 void ASGameMode::Killed(AController* Killer, AController* VictimPlayer, APawn* VictimPawn, const UDamageType* DamageType)
