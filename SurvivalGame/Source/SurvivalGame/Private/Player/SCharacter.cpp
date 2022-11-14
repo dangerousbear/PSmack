@@ -418,7 +418,7 @@ float ASCharacter::GetXP() const
 
 float ASCharacter::GetMaxXPForLevel() const
 {
-	return 200.0;
+	return 200.0 + 10 * Level;
 }
 
 int ASCharacter::GetLevel() const
