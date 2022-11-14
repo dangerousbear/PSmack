@@ -18,6 +18,7 @@
 #include "SurvivalGame/SurvivalGame.h"
 #include "GameFramework/DamageType.h"
 #include "Camera/CameraComponent.h"
+#include "World/SGameInstance.h"
 
 // Sets default values
 ASCharacter::ASCharacter(const class FObjectInitializer& ObjectInitializer)
@@ -68,7 +69,21 @@ ASCharacter::ASCharacter(const class FObjectInitializer& ObjectInitializer)
 	XP = 0;
 	Level = 1;
   bIsTalentTreeOpen = false;
-	TalentLevels = std::vector<int>(3, 0);
+	TalentLevels = std::vector<int>(10, 0);
+
+  if (auto World = GetWorld()) {
+    if (auto GameInstance = Cast<USGameInstance>(World->GetGameInstance())) {
+      Level = GameInstance->PlayerLevel;
+      XP = GameInstance->PlayerXP;
+      const auto talentLevels = GameInstance->PlayerTalentLevels; // Deliberate copy
+      for (size_t i = 0; i < talentLevels.size(); ++i) {
+				GameInstance->PlayerTalentLevels[i] = 0;
+        for (size_t n = 0; n < talentLevels[i]; ++n) {
+          IncrementTalent(i);
+        }
+      }
+    }
+  }
 
 	/* Names as specified in the character skeleton */
 	WeaponAttachPoint = TEXT("WeaponSocket");
@@ -467,6 +482,10 @@ void ASCharacter::LevelUp() {
     XP -= MaxXPForLevel;
     ++Level;
     SkillPointsAvailable += 3;
+    if (auto GameInstance = Cast<USGameInstance>(GetGameInstance())) {
+			GameInstance->PlayerLevel = Level;
+			GameInstance->PlayerXP = XP;
+    }
   }
 	if (auto PC = Cast<ASPlayerController>(Controller))
 	{
@@ -476,10 +495,17 @@ void ASCharacter::LevelUp() {
 
 void ASCharacter::SetSkillPointsAvailable(const int N) {
   SkillPointsAvailable = N;
+	if (auto GameInstance = Cast<USGameInstance>(GetGameInstance())) {
+		GameInstance->PlayerSkillPointsAvailable = N;
+	}
 }
 
 int ASCharacter::GetSkillPointsAvailable() const {
   return SkillPointsAvailable;
+}
+
+int ASCharacter::GetTalentLevel(int32 Index) const {
+	return TalentLevels[Index];
 }
 
 void ASCharacter::IncrementTalent(int Index) {
@@ -491,12 +517,22 @@ void ASCharacter::IncrementTalent(int Index) {
   case 1:
     if (auto w = Cast<ASWeaponInstant>(GetCurrentWeapon())) {
       w->SetDamageScale(1.0 + 0.1 * TalentLevels.at(1));
-			w->ScaleShotsPerMinute(1.1);
-			w->ScaleMaxAmmoInClip(1.1);
+      w->ScaleShotsPerMinute(1.1);
+      w->ScaleMaxAmmoInClip(1.1);
     }
+    break;
+  case 3:
+    DamageReductionFactor *= 0.95;
     break;
   default:
     break;
+  }
+  if (auto GameInstance = Cast<USGameInstance>(GetGameInstance())) {
+    auto& GITalentLevels = GameInstance->PlayerTalentLevels;
+    if (GITalentLevels.empty()) {
+      GITalentLevels = std::vector<int32>(TalentLevels.size(), 0);
+    }
+    ++GITalentLevels.at(Index);
   }
 }
 

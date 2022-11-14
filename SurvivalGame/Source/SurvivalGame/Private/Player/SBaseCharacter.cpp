@@ -19,6 +19,7 @@ ASBaseCharacter::ASBaseCharacter(const class FObjectInitializer& ObjectInitializ
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<USCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	Health = 100;
+	DamageReductionFactor = 1.0;
 
 	TargetingSpeedModifier = 0.5f;
 	SprintingSpeedModifier = 2.0f;
@@ -61,6 +62,7 @@ float ASBaseCharacter::TakeDamage(float Damage, struct FDamageEvent const& Damag
 	/* Modify based based on gametype rules */
 	ASGameMode* MyGameMode = Cast<ASGameMode>(GetWorld()->GetAuthGameMode());
 	Damage = MyGameMode ? MyGameMode->ModifyDamage(Damage, this, DamageEvent, EventInstigator, DamageCauser) : Damage;
+  Damage *= DamageReductionFactor;
 
 	const float ActualDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 	if (ActualDamage > 0.f)

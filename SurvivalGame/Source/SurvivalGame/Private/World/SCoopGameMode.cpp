@@ -8,6 +8,7 @@
 #include "World/SGameState.h"
 #include "EngineUtils.h"
 #include "Player/SPlayerController.h"
+#include <Kismet/GameplayStatics.h>
 
 
 
@@ -98,7 +99,10 @@ void ASCoopGameMode::RestartPlayer(class AController* NewPlayer)
 				SetPlayerDefaults(NewPlayer->GetPawn());
 			}
 		}
-	}
+  }
+  else {
+    Super::RestartPlayer(NewPlayer);
+  }
 }
 
 
@@ -132,7 +136,7 @@ void ASCoopGameMode::OnNightEnded()
 			}
 		}
 	}
-	const auto increaseFactor = 1.2;
+	const auto increaseFactor = 1.5;
 	MaxPawnsInZone = static_cast<int32>(increaseFactor * MaxPawnsInZone);
 	BotSpawnInterval /= increaseFactor;
 }
@@ -199,18 +203,19 @@ void ASCoopGameMode::FinishMatch()
 {
 	if (IsMatchInProgress())
 	{
-		EndMatch();
+		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+		//EndMatch();
 
-		/* Stop spawning bots */
-		GetWorldTimerManager().ClearTimer(TimerHandle_BotSpawns);
+		///* Stop spawning bots */
+		//GetWorldTimerManager().ClearTimer(TimerHandle_BotSpawns);
 
-		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
-		{
-			ASPlayerController* MyController = Cast<ASPlayerController>(*It);
-			if (MyController)
-			{
-				MyController->ClientHUDStateChanged(EHUDState::MatchEnd);
-			}
-		}
+		//for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
+		//{F
+		//	ASPlayerController* MyController = Cast<ASPlayerController>(*It);
+		//	if (MyController)
+		//	{
+		//		MyController->ClientHUDStateChanged(EHUDState::MatchEnd);
+		//	}
+		//}
 	}
 }

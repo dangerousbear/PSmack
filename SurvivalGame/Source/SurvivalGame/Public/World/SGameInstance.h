@@ -34,4 +34,9 @@ public:
 	FPlayerArrayChanged OnPlayerStateRemoved;
 
 
+  int32 PlayerLevel;
+	int32 PlayerSkillPointsAvailable;
+	std::vector<int32> PlayerTalentLevels;
+  float PlayerXP;
+
 };

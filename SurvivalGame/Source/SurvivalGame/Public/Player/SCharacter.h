@@ -195,10 +195,10 @@ public:
 	float XP;
 
 	UPROPERTY(EditDefaultsOnly, Category = "PlayerCondition", Replicated)
-	int Level;
+	int32 Level;
 
 	UPROPERTY(EditDefaultsOnly, Category = "PlayerCondition", Replicated)
-  int SkillPointsAvailable;
+  int32 SkillPointsAvailable;
 
 	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
 	void IncrementXP(float Value);
@@ -208,6 +208,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
 	int GetSkillPointsAvailable() const;
+
+	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
+  int32 GetTalentLevel(int32 Index) const;
 
 	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
   void SetSkillPointsAvailable(int N);
@@ -253,7 +256,7 @@ private:
 
   bool bIsTalentTreeOpen;
 
-  std::vector<int> TalentLevels;
+  std::vector<int32> TalentLevels;
 
 	/* Distance away from character when dropping inventory items. */
 	UPROPERTY(EditDefaultsOnly, Category = "Inventory")

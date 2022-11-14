@@ -50,13 +50,13 @@ ASGameMode::ASGameMode()
 
 void ASGameMode::InitGameState()
 {
-	Super::InitGameState();
+  Super::InitGameState();
 
-	ASGameState* MyGameState = Cast<ASGameState>(GameState);
-	if (MyGameState)
-	{
-		MyGameState->ElapsedGameMinutes = TimeOfDayStart;
-	}
+  ASGameState* MyGameState = Cast<ASGameState>(GameState);
+  if (MyGameState)
+  {
+    MyGameState->ElapsedGameMinutes = TimeOfDayStart;
+  }
 }
 
 
@@ -85,12 +85,12 @@ void ASGameMode::DefaultTimer()
 {
 	/* Immediately start the match while playing in editor */
 	//if (GetWorld()->IsPlayInEditor())
-	{
-		if (GetMatchState() == MatchState::WaitingToStart)
-		{
-			StartMatch();
-		}
-	}
+	//{
+		//if (GetMatchState() == MatchState::WaitingToStart)
+	//	{
+	//		StartMatch();
+	//	}
+	//}
 
 	/* Only increment time of day while game is active */
 	if (IsMatchInProgress())
@@ -298,12 +298,14 @@ void ASGameMode::SpawnNewBot()
 	{
 		// This will fail unless blueprint has implemented this function to handle spawn locations
 		UE_LOG(LogGame, Warning, TEXT("Failed to find bot spawn transform for SpawnNewBot."));
-		return;
-	}
+    return;
+  }
 
-	auto NewBot = GetWorld()->SpawnActor<APawn>(BotPawnClass, SpawnTransform);
-  if (auto NewZombie = Cast<ASZombieCharacter>(NewBot) ) {
-  
+  auto NewBot = GetWorld()->SpawnActor<APawn>(BotPawnClass, SpawnTransform);
+  if (auto NewZombie = Cast<ASZombieCharacter>(NewBot)) {
+    if (auto MyGameState = Cast<ASGameState>(GameState)) {
+      NewZombie->SetPowerScale(1.0 + 0.2 * MyGameState->ElapsedGameMinutes / 720.0);
+    }
   }
 }
 
@@ -377,7 +379,6 @@ void ASGameMode::SpawnBotHandler()
 			{
 				SpawnNewBot();
 			}
-
 		}
 	}
 }

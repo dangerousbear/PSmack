@@ -199,6 +199,19 @@ void ASZombieCharacter::SetBotType(EBotBehaviorType NewType)
 	BroadcastUpdateAudioLoop(bSensedTarget);
 }
 
+void ASZombieCharacter::SetPowerScale(float Scale)
+{
+	Health *= Scale;
+  //MeleeDamage *= 0.5 * (1.0 + Scale);
+  SprintingSpeedModifier *= Scale;
+	PawnSensingComp->HearingThreshold *= Scale;
+}
+
+float ASZombieCharacter::GetPowerScale()
+{
+	return SprintingSpeedModifier / 3.0f;
+}
+
 
 UAudioComponent* ASZombieCharacter::PlayCharacterSound(USoundCue* CueToPlay)
 {
