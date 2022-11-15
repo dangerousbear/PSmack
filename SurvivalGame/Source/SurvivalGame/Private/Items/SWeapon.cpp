@@ -36,12 +36,13 @@ ASWeapon::ASWeapon()
 	MuzzleAttachPoint = TEXT("MuzzleFlashSocket");
 	StorageSlot = EInventorySlot::Primary;
 
-	ShotsPerMinute = 700;
-	StartAmmo = 999;
-	MaxAmmo = 999;
-	MaxAmmoPerClip = 30;
+	ShotsPerMinute = 60;
+	StartAmmo = 60;
+	MaxAmmo = 100;
+	MaxAmmoPerClip = 5;
 	NoAnimReloadDuration = 1.5f;
 	NoEquipAnimDuration = 0.5f;
+  ReloadScale = 0.5f;
 }
 
 
@@ -61,15 +62,21 @@ void ASWeapon::ScaleShotsPerMinute(float Factor)
 	TimeBetweenShots = 60.0f / ShotsPerMinute;
 }
 
-void ASWeapon::ScaleMaxAmmoInClip(float Factor)
+void ASWeapon::ScaleMaxAmmoInClipAndTotal(float Factor)
 {
-	MaxAmmoPerClip = static_cast<int32>(Factor * MaxAmmoPerClip);
+  MaxAmmoPerClip = static_cast<int32>(1 + Factor * MaxAmmoPerClip);
+  MaxAmmo = static_cast<int32>(1 + Factor * MaxAmmo);
 }
 
 void ASWeapon::RestoreAmmo(int32 Factor)
 {
-	CurrentAmmo += Factor * MaxAmmoPerClip;
+  CurrentAmmo = std::max(MaxAmmo, Factor * MaxAmmoPerClip);
 }
+
+void ASWeapon::ScaleReloadSpeed(float Factor) {
+	ReloadScale *= Factor;
+}
+
 
 
 void ASWeapon::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -737,7 +744,8 @@ void ASWeapon::StartReload(bool bFromReplication)
 		bPendingReload = true;
 		DetermineWeaponState();
 
-		float AnimDuration = PlayWeaponAnimation(ReloadAnim);
+		float AnimDuration = PlayWeaponAnimation(ReloadAnim, ReloadScale);
+    AnimDuration /= ReloadScale;
 		if (AnimDuration <= 0.0f)
 		{
 			AnimDuration = NoAnimReloadDuration;
