@@ -29,6 +29,7 @@ ASCharacter::ASCharacter(const class FObjectInitializer& ObjectInitializer)
 
 	UCharacterMovementComponent* MoveComp = GetCharacterMovement();
 	// Adjust jump to make it less floaty
+	MoveComp->MaxWalkSpeed = 200;
 	MoveComp->GravityScale = 1.5f;
 	MoveComp->JumpZVelocity = 620;
 	MoveComp->bCanWalkOffLedgesWhenCrouching = true;
@@ -56,7 +57,7 @@ ASCharacter::ASCharacter(const class FObjectInitializer& ObjectInitializer)
 	DropWeaponMaxDistance = 100;
 	bHasNewFocus = true;
 	TargetingSpeedModifier = 0.5f;
-	SprintingSpeedModifier = 2.5f;
+	SprintingSpeedModifier = 1.5f;
 
 	Health = 100;
 
@@ -298,7 +299,7 @@ void ASCharacter::OnEndTargeting()
 
 void ASCharacter::OnJump()
 {
-  IncrementXP(100.0);
+  IncrementXP(300.0);
 	SetIsJumping(true);
 }
 
@@ -524,18 +525,32 @@ void ASCharacter::IncrementTalent(int Index) {
   ++TalentLevels.at(Index);
   switch (Index) {
   case 0:
-    SprintingSpeedModifier *= 2.0;
+    SprintingSpeedModifier *= 1.1;
+    GetCharacterMovement()->MaxWalkSpeed *= 1.1;
     break;
   case 1:
     if (auto w = Cast<ASWeaponInstant>(GetCurrentWeapon())) {
       w->SetDamageScale(1.0 + 0.1 * TalentLevels.at(1));
-      w->ScaleShotsPerMinute(1.1);
-      w->ScaleMaxAmmoInClip(1.1);
     }
     break;
   case 3:
     DamageReductionFactor *= 0.95;
     break;
+  case 4:
+    if (auto w = Cast<ASWeaponInstant>(GetCurrentWeapon())) {
+      w->ScaleMaxAmmoInClipAndTotal(1.1);
+    }
+    break;
+  case 5:
+    if (auto w = Cast<ASWeaponInstant>(GetCurrentWeapon())) {
+      w->ScaleReloadSpeed(1.1);
+    }
+    break;
+	case 6:
+		if (auto w = Cast<ASWeaponInstant>(GetCurrentWeapon())) {
+			w->ScaleShotsPerMinute(1.1);
+		}
+		break;
   default:
     break;
   }
@@ -549,7 +564,7 @@ void ASCharacter::IncrementTalent(int Index) {
 }
 
 void ASCharacter::LifeStealFromDamage(float Damage) {
-  IncrementXP(0.01 * Damage);
+  IncrementXP(0.002 * Damage);
   Health = FMath::Clamp(Health + Damage * TalentLevels.at(2) * 0.1f, 0.0f, GetMaxHealth());
 }
 

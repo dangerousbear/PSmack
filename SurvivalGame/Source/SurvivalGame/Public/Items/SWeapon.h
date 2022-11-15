@@ -85,9 +85,11 @@ public:
 
 	void ScaleShotsPerMinute(float Factor);
 
-	void ScaleMaxAmmoInClip(float Factor);
+	void ScaleMaxAmmoInClipAndTotal(float Factor);
 
 	void RestoreAmmo(int32 Factor);
+
+	void ScaleReloadSpeed(float Factor);
 
 	virtual void OnUnEquip();
 
@@ -248,6 +250,8 @@ private:
 	FTimerHandle TimerHandle_ReloadWeapon;
 
 	FTimerHandle TimerHandle_StopReload;
+
+  float ReloadScale;
 
 protected:
 

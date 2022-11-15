@@ -45,6 +45,7 @@ ASGameMode::ASGameMode()
 
 	// You may want to make this number dynamic as players survived multiple nights
 	MaxPawnsInZone = 20;
+  bReadyToStart = false;
 }
 
 
@@ -68,6 +69,10 @@ void ASGameMode::PreInitializeComponents()
 	GetWorldTimerManager().SetTimer(TimerHandle_DefaultTimer, this, &ASGameMode::DefaultTimer, GetWorldSettings()->GetEffectiveTimeDilation(), true);
 }
 
+void ASGameMode::SetIsReadyAndStart()
+{
+	bReadyToStart = true;
+}
 
 void ASGameMode::StartMatch()
 {
@@ -93,7 +98,7 @@ void ASGameMode::DefaultTimer()
 	//}
 
 	/* Only increment time of day while game is active */
-	if (IsMatchInProgress())
+	if (bReadyToStart && IsMatchInProgress())
 	{
 		ASGameState* MyGameState = Cast<ASGameState>(GameState);
 		if (MyGameState)

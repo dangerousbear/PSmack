@@ -104,6 +104,9 @@ protected:
 
 public: 
 
+	UFUNCTION(BlueprintCallable, Exec, Category = "GameMode")
+		virtual void SetIsReadyAndStart();
+
 	virtual void Killed(AController* Killer, AController* VictimPlayer, APawn* VictimPawn, const UDamageType* DamageType);
 
 	/* Can the player deal damage according to gamemode rules (eg. friendly-fire disabled) */
@@ -130,6 +133,8 @@ protected:
 
 	/* Set all bots to active patrolling state */
 	void WakeAllBots();
+
+  bool bReadyToStart;
 
 public:
 
