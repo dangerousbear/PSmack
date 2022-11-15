@@ -22,6 +22,8 @@ class SURVIVALGAME_API ASCoopGameMode : public ASGameMode
 	/* End the match, with a delay before returning to the main menu */
 	void FinishMatch();
 
+	void ResetMatch();
+
 	/* Spawn the player next to his living coop buddy instead of a PlayerStart */
 	virtual void RestartPlayer(class AController* NewPlayer) override;
 
@@ -41,4 +43,5 @@ class SURVIVALGAME_API ASCoopGameMode : public ASGameMode
 	UPROPERTY(EditDefaultsOnly, Category = "Scoring")
 	int32 ScoreNightSurvived;
 
+	FTimerHandle TimerHandle_ResetTimer;
 };

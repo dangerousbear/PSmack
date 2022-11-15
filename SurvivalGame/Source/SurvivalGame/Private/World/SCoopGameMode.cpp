@@ -203,19 +203,25 @@ void ASCoopGameMode::FinishMatch()
 {
 	if (IsMatchInProgress())
 	{
-		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
-		//EndMatch();
 
-		///* Stop spawning bots */
-		//GetWorldTimerManager().ClearTimer(TimerHandle_BotSpawns);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_ResetTimer, this, &ASCoopGameMode::ResetMatch, 10.0, false);
+		EndMatch();
 
-		//for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
-		//{F
-		//	ASPlayerController* MyController = Cast<ASPlayerController>(*It);
-		//	if (MyController)
-		//	{
-		//		MyController->ClientHUDStateChanged(EHUDState::MatchEnd);
-		//	}
-		//}
+		/* Stop spawning bots */
+		GetWorldTimerManager().ClearTimer(TimerHandle_BotSpawns);
+
+		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
+		{
+			ASPlayerController* MyController = Cast<ASPlayerController>(*It);
+			if (MyController)
+			{
+				MyController->ClientHUDStateChanged(EHUDState::MatchEnd);
+			}
+		}
 	}
 }
+
+void ASCoopGameMode::ResetMatch() {
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+}
+
