@@ -1,6 +1,7 @@
 // Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
 #pragma once
+#include <vector>
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
@@ -33,8 +34,12 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Game|Events")
 	FPlayerArrayChanged OnPlayerStateRemoved;
 
+	UFUNCTION(BlueprintCallable, Category = "Player")
+	void SetPlayerTypeIndex(int32 Index);
 
-  int32 PlayerLevel;
+
+	int32 PlayerTypeIndex;
+	int32 PlayerLevel;
 	int32 PlayerSkillPointsAvailable;
 	std::vector<int32> PlayerTalentLevels;
   float PlayerXP;
