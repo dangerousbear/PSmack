@@ -17,6 +17,7 @@ ASCoopGameMode::ASCoopGameMode()
 	/* Disable damage to coop buddies  */
 	bAllowFriendlyFireDamage = false;
 	bSpawnAtTeamPlayer = true;
+  bUseSeamlessTravel = true;
 	
 	ScoreNightSurvived = 1000;
 }
@@ -222,6 +223,7 @@ void ASCoopGameMode::FinishMatch()
 }
 
 void ASCoopGameMode::ResetMatch() {
-	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+	GetWorld()->ServerTravel("/Game/Maps/Landscape_Map");
+	//UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 }
 
