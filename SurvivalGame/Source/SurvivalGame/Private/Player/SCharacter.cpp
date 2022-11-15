@@ -73,8 +73,9 @@ ASCharacter::ASCharacter(const class FObjectInitializer& ObjectInitializer)
 
   if (auto World = GetWorld()) {
     if (auto GameInstance = Cast<USGameInstance>(World->GetGameInstance())) {
-      Level = GameInstance->PlayerTypeIndex;
-      //Level = GameInstance->PlayerLevel;
+			//Level = GameInstance->PlayerTypeIndex; // TODO:CHange back
+			Level = GameInstance->PlayerTypeIndex;
+      PlayerTypeIndex = GameInstance->PlayerTypeIndex;
       XP = GameInstance->PlayerXP;
       const auto talentLevels = GameInstance->PlayerTalentLevels; // Deliberate copy
       for (size_t i = 0; i < talentLevels.size(); ++i) {
@@ -425,6 +426,10 @@ float ASCharacter::GetMaxXPForLevel() const
 int ASCharacter::GetLevel() const
 {
 	return Level;
+}
+
+int32 ASCharacter::GetPlayerTypeIndex() const{
+  return PlayerTypeIndex;
 }
 
 
