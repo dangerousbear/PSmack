@@ -45,7 +45,7 @@ ASGameMode::ASGameMode()
 
 	// You may want to make this number dynamic as players survived multiple nights
 	MaxPawnsInZone = 20;
-  bReadyToStart = true;
+  bReadyToStart = false;
 }
 
 
