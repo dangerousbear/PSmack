@@ -66,6 +66,11 @@ void ASWeapon::ScaleMaxAmmoInClip(float Factor)
 	MaxAmmoPerClip = static_cast<int32>(Factor * MaxAmmoPerClip);
 }
 
+void ASWeapon::RestoreAmmo(int32 Factor)
+{
+	CurrentAmmo += Factor * MaxAmmoPerClip;
+}
+
 
 void ASWeapon::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {

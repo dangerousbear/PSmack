@@ -446,6 +446,12 @@ void ASCharacter::RestoreCondition(float HealthRestored, float HungerRestored)
 
 	// Restore Hitpoints
 	Health = FMath::Clamp(Health + HealthRestored, 0.0f, GetMaxHealth());
+  
+  // Restore ammo
+	if (auto w = Cast<ASWeaponInstant>(GetCurrentWeapon())) {
+		w->RestoreAmmo(3);
+  }
+
 
 	ASPlayerController* PC = Cast<ASPlayerController>(Controller);
 	if (PC)
