@@ -87,6 +87,8 @@ public:
 
 	void ScaleMaxAmmoInClip(float Factor);
 
+	void RestoreAmmo(int32 Factor);
+
 	virtual void OnUnEquip();
 
 	void OnEquip(bool bPlayAnimation);

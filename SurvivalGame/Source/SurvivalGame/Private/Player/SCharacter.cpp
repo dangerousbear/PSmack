@@ -73,7 +73,8 @@ ASCharacter::ASCharacter(const class FObjectInitializer& ObjectInitializer)
 
   if (auto World = GetWorld()) {
     if (auto GameInstance = Cast<USGameInstance>(World->GetGameInstance())) {
-      Level = GameInstance->PlayerLevel;
+      Level = GameInstance->PlayerTypeIndex;
+      //Level = GameInstance->PlayerLevel;
       XP = GameInstance->PlayerXP;
       const auto talentLevels = GameInstance->PlayerTalentLevels; // Deliberate copy
       for (size_t i = 0; i < talentLevels.size(); ++i) {
@@ -446,6 +447,12 @@ void ASCharacter::RestoreCondition(float HealthRestored, float HungerRestored)
 
 	// Restore Hitpoints
 	Health = FMath::Clamp(Health + HealthRestored, 0.0f, GetMaxHealth());
+  
+  // Restore ammo
+	if (auto w = Cast<ASWeaponInstant>(GetCurrentWeapon())) {
+		w->RestoreAmmo(3);
+  }
+
 
 	ASPlayerController* PC = Cast<ASPlayerController>(Controller);
 	if (PC)
