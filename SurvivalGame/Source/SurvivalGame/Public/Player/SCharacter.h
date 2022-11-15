@@ -153,7 +153,10 @@ public:
 	float GetMaxXPForLevel() const;
 
 	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
-	int GetLevel() const;
+	int32 GetLevel() const;
+
+	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
+	int32 GetPlayerTypeIndex() const;
 
 	/************************************************************************/
 	/* Hunger                                                               */
@@ -196,6 +199,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "PlayerCondition", Replicated)
 	int32 Level;
+
+	UPROPERTY(EditDefaultsOnly, Category = "PlayerCondition", Replicated)
+	int32 PlayerTypeIndex;
 
 	UPROPERTY(EditDefaultsOnly, Category = "PlayerCondition", Replicated)
   int32 SkillPointsAvailable;
