@@ -205,7 +205,7 @@ void ASCoopGameMode::FinishMatch()
 	if (IsMatchInProgress())
 	{
 
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle_ResetTimer, this, &ASCoopGameMode::ResetMatch, 10.0, false);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_ResetTimer, this, &ASCoopGameMode::ResetMatch, 1.0, false);
 		EndMatch();
 
 		/* Stop spawning bots */
@@ -223,7 +223,15 @@ void ASCoopGameMode::FinishMatch()
 }
 
 void ASCoopGameMode::ResetMatch() {
-	GetWorld()->ServerTravel("/Game/Maps/Landscape_Map");
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
+	{
+		ASPlayerController* MyController = Cast<ASPlayerController>(*It);
+		if (MyController)
+		{
+			MyController->ClientHUDStateChanged(EHUDState::Playing);
+		}
+	}
+	GetWorld()->ServerTravel(GetWorld()->GetName());
 	//UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 }
 
