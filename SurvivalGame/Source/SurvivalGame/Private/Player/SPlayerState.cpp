@@ -76,3 +76,24 @@ void ASPlayerState::GetLifetimeReplicatedProps(TArray< class FLifetimeProperty >
 	DOREPLIFETIME(ASPlayerState, NumDeaths);
 	DOREPLIFETIME(ASPlayerState, TeamNumber);
 }
+
+void ASPlayerState::SetPlayerTypeIndex(int32 Index) {
+  PlayerTypeIndex = Index;
+}
+
+void ASPlayerState::CopyProperties(class APlayerState* PlayerState)
+{
+	APlayerState::CopyProperties(PlayerState);
+
+	if (PlayerState != nullptr)
+	{
+		if (auto PS = Cast<ASPlayerState>(PlayerState))
+		{
+			PS->PlayerXP = PlayerXP;
+			PS->PlayerLevel = PlayerLevel;
+			PS->PlayerSkillPointsAvailable = PlayerSkillPointsAvailable;
+			PS->PlayerTalentLevels = PlayerTalentLevels;
+			PS->PlayerTypeIndex = PlayerTypeIndex;
+		}
+	}
+}

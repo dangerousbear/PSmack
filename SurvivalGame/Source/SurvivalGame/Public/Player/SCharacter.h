@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include <vector>
 #include "CoreMinimal.h"
 #include "Player/SBaseCharacter.h"
 #include "SCharacter.generated.h"
@@ -37,6 +36,7 @@ class SURVIVALGAME_API ASCharacter : public ASBaseCharacter
 	float LastMakeNoiseTime;
 
 private:
+	void InitState();
 
 	/* Boom to handle distance to player mesh. */
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
@@ -262,7 +262,7 @@ private:
 
   bool bIsTalentTreeOpen;
 
-  std::vector<int32> TalentLevels;
+	TArray<int32> TalentLevels;
 
 	/* Distance away from character when dropping inventory items. */
 	UPROPERTY(EditDefaultsOnly, Category = "Inventory")

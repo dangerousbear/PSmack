@@ -19,6 +19,7 @@
 #include "GameFramework/DamageType.h"
 #include "Camera/CameraComponent.h"
 #include "World/SGameInstance.h"
+#include <Player/SPlayerState.h>
 
 // Sets default values
 ASCharacter::ASCharacter(const class FObjectInitializer& ObjectInitializer)
@@ -70,22 +71,9 @@ ASCharacter::ASCharacter(const class FObjectInitializer& ObjectInitializer)
 	XP = 0;
 	Level = 1;
   bIsTalentTreeOpen = false;
-	TalentLevels = std::vector<int>(10, 0);
-
-  if (auto World = GetWorld()) {
-    if (auto GameInstance = Cast<USGameInstance>(World->GetGameInstance())) {
-			//Level = GameInstance->PlayerTypeIndex; // TODO:CHange back
-			Level = GameInstance->PlayerTypeIndex;
-      PlayerTypeIndex = GameInstance->PlayerTypeIndex;
-      XP = GameInstance->PlayerXP;
-      const auto talentLevels = GameInstance->PlayerTalentLevels; // Deliberate copy
-      for (size_t i = 0; i < talentLevels.size(); ++i) {
-				GameInstance->PlayerTalentLevels[i] = 0;
-        for (size_t n = 0; n < talentLevels[i]; ++n) {
-          IncrementTalent(i);
-        }
-      }
-    }
+  TalentLevels = TArray<int32>();
+  for (size_t i = 0; i < 20; ++i) {
+    TalentLevels.Add(0);
   }
 
 	/* Names as specified in the character skeleton */
@@ -104,6 +92,23 @@ void ASCharacter::BeginPlay()
 		// Set a timer to increment hunger every interval
 		FTimerHandle Handle;
 		GetWorldTimerManager().SetTimer(Handle, this, &ASCharacter::IncrementHunger, IncrementHungerInterval, true);
+	}
+	FTimerHandle Handle2;
+	GetWorldTimerManager().SetTimer(Handle2, this, &ASCharacter::InitState, 0.1, false);
+}
+
+void ASCharacter::InitState() {
+	if (auto PS = Cast<ASPlayerState>(GetPlayerState())) {
+		Level = PS->PlayerTypeIndex;
+		PlayerTypeIndex = PS->PlayerTypeIndex;
+		XP = PS->PlayerXP;
+		const auto talentLevels = PS->PlayerTalentLevels; // Deliberate copy
+		for (size_t i = 0; i < talentLevels.Num(); ++i) {
+			PS->PlayerTalentLevels[i] = 0;
+			for (size_t n = 0; n < talentLevels[i]; ++n) {
+				IncrementTalent(i);
+			}
+		}
 	}
 }
 
@@ -495,22 +500,22 @@ void ASCharacter::LevelUp() {
     XP -= MaxXPForLevel;
     ++Level;
     SkillPointsAvailable += 3;
-    if (auto GameInstance = Cast<USGameInstance>(GetGameInstance())) {
-			GameInstance->PlayerLevel = Level;
-			GameInstance->PlayerXP = XP;
+    if (auto PS = Cast<ASPlayerState>(GetPlayerState())) {
+      PS->PlayerLevel = Level;
+      PS->PlayerXP = XP;
     }
   }
-	if (auto PC = Cast<ASPlayerController>(Controller))
-	{
-		PC->ClientHUDMessage(EHUDMessage::Character_LevelUp);
-	}
+  if (auto PC = Cast<ASPlayerController>(Controller))
+  {
+    PC->ClientHUDMessage(EHUDMessage::Character_LevelUp);
+  }
 }
 
 void ASCharacter::SetSkillPointsAvailable(const int N) {
   SkillPointsAvailable = N;
-	if (auto GameInstance = Cast<USGameInstance>(GetGameInstance())) {
-		GameInstance->PlayerSkillPointsAvailable = N;
-	}
+  if (auto PS = Cast<ASPlayerState>(GetPlayerState())) {
+    PS->PlayerSkillPointsAvailable = N;
+  }
 }
 
 int ASCharacter::GetSkillPointsAvailable() const {
@@ -522,7 +527,7 @@ int ASCharacter::GetTalentLevel(int32 Index) const {
 }
 
 void ASCharacter::IncrementTalent(int Index) {
-  ++TalentLevels.at(Index);
+  ++TalentLevels[Index];
   switch (Index) {
   case 0:
     SprintingSpeedModifier *= 1.1;
@@ -530,7 +535,7 @@ void ASCharacter::IncrementTalent(int Index) {
     break;
   case 1:
     if (auto w = Cast<ASWeaponInstant>(GetCurrentWeapon())) {
-      w->SetDamageScale(1.0 + 0.1 * TalentLevels.at(1));
+      w->SetDamageScale(1.0 + 0.1 * TalentLevels[1]);
     }
     break;
   case 3:
@@ -554,18 +559,21 @@ void ASCharacter::IncrementTalent(int Index) {
   default:
     break;
   }
-  if (auto GameInstance = Cast<USGameInstance>(GetGameInstance())) {
-    auto& GITalentLevels = GameInstance->PlayerTalentLevels;
-    if (GITalentLevels.empty()) {
-      GITalentLevels = std::vector<int32>(TalentLevels.size(), 0);
+  if (auto PS = Cast<ASPlayerState>(GetPlayerState())) {
+    auto& GITalentLevels = PS->PlayerTalentLevels;
+    if (GITalentLevels.Num() == 0) {
+      GITalentLevels = TArray<int32>();
+			for (size_t i = 0; i < 20; ++i) {
+				GITalentLevels.Add(0);
+			}
     }
-    ++GITalentLevels.at(Index);
+    ++GITalentLevels[Index];
   }
 }
 
 void ASCharacter::LifeStealFromDamage(float Damage) {
   IncrementXP(0.002 * Damage);
-  Health = FMath::Clamp(Health + Damage * TalentLevels.at(2) * 0.1f, 0.0f, GetMaxHealth());
+  Health = FMath::Clamp(Health + Damage * TalentLevels[2] * 0.1f, 0.0f, GetMaxHealth());
 }
 
 void ASCharacter::OnDeath(float KillingDamage, FDamageEvent const& DamageEvent, APawn* PawnInstigator, AActor* DamageCauser)
