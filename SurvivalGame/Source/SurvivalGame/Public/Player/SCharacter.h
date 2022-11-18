@@ -36,7 +36,6 @@ class SURVIVALGAME_API ASCharacter : public ASBaseCharacter
 	float LastMakeNoiseTime;
 
 private:
-	void InitState();
 
 	/* Boom to handle distance to player mesh. */
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
@@ -50,6 +49,8 @@ private:
 	class USCarryObjectComponent* CarriedObjectComp;
 
 public:
+	UFUNCTION(BlueprintCallable, Category = "Player")
+	void InitState();
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	float GetLastNoiseLoudness();

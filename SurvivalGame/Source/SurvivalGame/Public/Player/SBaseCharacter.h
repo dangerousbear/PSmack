@@ -50,7 +50,7 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "Movement", Replicated)
 	float SprintingSpeedModifier;
 
 	/* Character wants to run, checked during Tick to see if allowed */
@@ -105,7 +105,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "PlayerCondition", Replicated)
 	float Health;
   
-  float DamageReductionFactor;
+	UPROPERTY(EditDefaultsOnly, Category = "PlayerCondition", Replicated)
+	float DamageReductionFactor;
 
 	/* Take damage & handle death */
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;

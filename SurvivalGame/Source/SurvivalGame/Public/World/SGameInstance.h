@@ -34,4 +34,16 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Game|Events")
 	FPlayerArrayChanged OnPlayerStateRemoved;
 
+  UFUNCTION(BlueprintCallable, Category = "Player")
+    void SetPlayerTypeIndex(int32 Index);
+  UFUNCTION(BlueprintCallable, Category = "Player")
+    int32 GetPlayerTypeIndex();
+
+
+	int32 PlayerTypeIndex;
+	int32 PlayerLevel;
+	int32 PlayerSkillPointsAvailable;
+	TArray<int32> PlayerTalentLevels;
+	float PlayerXP;
+
 };

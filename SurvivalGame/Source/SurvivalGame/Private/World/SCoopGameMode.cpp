@@ -9,6 +9,7 @@
 #include "EngineUtils.h"
 #include "Player/SPlayerController.h"
 #include <Kismet/GameplayStatics.h>
+#include <AI/SZombieCharacter.h>
 
 
 
@@ -28,12 +29,19 @@ ASCoopGameMode::ASCoopGameMode()
 */
 void ASCoopGameMode::RestartPlayer(class AController* NewPlayer)
 {
-	/* Fallback to PlayerStart picking if team spawning is disabled or we're trying to spawn a bot. */
-	if (!bSpawnAtTeamPlayer || (NewPlayer->PlayerState && NewPlayer->PlayerState->IsABot()))
-	{
-		Super::RestartPlayer(NewPlayer);
-		return;
-	}
+  RestartPlayerInner(NewPlayer);
+	if (auto Pawn = Cast<ASCharacter>(NewPlayer->GetPawn())) {
+    Pawn->InitState();
+  }
+}
+
+void ASCoopGameMode::RestartPlayerInner(class AController* NewPlayer) {
+  /* Fallback to PlayerStart picking if team spawning is disabled or we're trying to spawn a bot. */
+  if (!bSpawnAtTeamPlayer || (NewPlayer->PlayerState && NewPlayer->PlayerState->IsABot()))
+  {
+    Super::RestartPlayer(NewPlayer);
+    return;
+  }
 
 	/* Look for a live player to spawn next to */
 	FVector SpawnOrigin = FVector::ZeroVector;
@@ -100,10 +108,7 @@ void ASCoopGameMode::RestartPlayer(class AController* NewPlayer)
 				SetPlayerDefaults(NewPlayer->GetPawn());
 			}
 		}
-  }
-  else {
-    Super::RestartPlayer(NewPlayer);
-  }
+	}
 }
 
 
@@ -137,9 +142,6 @@ void ASCoopGameMode::OnNightEnded()
 			}
 		}
 	}
-	const auto increaseFactor = 1.5;
-	MaxPawnsInZone = static_cast<int32>(increaseFactor * MaxPawnsInZone);
-	BotSpawnInterval /= increaseFactor;
 }
 
 
@@ -205,11 +207,10 @@ void ASCoopGameMode::FinishMatch()
 	if (IsMatchInProgress())
 	{
 
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle_ResetTimer, this, &ASCoopGameMode::ResetMatch, 1.0, false);
-		EndMatch();
+		//EndMatch();
 
 		/* Stop spawning bots */
-		GetWorldTimerManager().ClearTimer(TimerHandle_BotSpawns);
+		//GetWorldTimerManager().ClearTimer(TimerHandle_BotSpawns);
 
 		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
 		{
@@ -219,19 +220,120 @@ void ASCoopGameMode::FinishMatch()
 				MyController->ClientHUDStateChanged(EHUDState::MatchEnd);
 			}
 		}
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_ResetTimer, this, &ASCoopGameMode::ResetMatch, 1.0, false);
 	}
 }
 
-void ASCoopGameMode::ResetMatch() {
+void ASCoopGameMode::RespawnPlayers() {
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
 	{
+		/* Look for all players that are spectating */
 		ASPlayerController* MyController = Cast<ASPlayerController>(*It);
-		if (MyController)
+		if (MyController && MyController->PlayerState->IsSpectator())
 		{
+			RestartPlayer(MyController);
 			MyController->ClientHUDStateChanged(EHUDState::Playing);
 		}
 	}
-	GetWorld()->ServerTravel(GetWorld()->GetName());
-	//UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+}
+
+
+void ASCoopGameMode::ResetMatch() {
+	for (TActorIterator<APawn> It(GetWorld()); It; ++It)
+	{
+		if (auto Pawn = Cast<ASBaseCharacter>(*It)) {
+			Pawn->Destroy();
+		}
+	}
+  for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
+  {
+    if (auto MyController = Cast<ASPlayerController>(*It))
+    {
+      RestartPlayer(MyController);
+      MyController->ClientHUDStateChanged(EHUDState::Playing);
+    }
+  }
+
+
+	if (auto MyGameState = Cast<ASGameState>(GameState))
+	{
+		MyGameState->ElapsedGameMinutes = TimeOfDayStart;
+	}
+  DayIndex = 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //Store state, reset, set state
+  //struct SavedState {
+  //  int32 PlayerTypeIndex;
+  //  int32 PlayerLevel;
+  //  int32 PlayerSkillPointsAvailable;
+  //  TArray<int32> PlayerTalentLevels;
+  //  float PlayerXP;
+  //};
+
+  //auto states = std::vector<SavedState>();
+
+  //for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
+  //{
+  //  if (auto MyController = Cast<ASPlayerController>(*It))
+  //  {
+  //    if (auto PS = Cast<ASPlayerState>(MyController->PlayerState)) {
+  //      states.push_back(SavedState{
+  //      PS->PlayerTypeIndex,
+  //      PS->PlayerLevel,
+  //      PS->PlayerSkillPointsAvailable,
+  //      PS->PlayerTalentLevels,
+  //      PS->PlayerXP
+  //        });
+  //    }
+  //  }
+  //}
+
+  //size_t i = 0;
+	//GetWorld()->ServerTravel("/Game/Maps/Landscape_Map");
+	//ResetLevel();
+	//for (FActorIterator It(GetWorld()); It; ++It)
+	//{
+	//	auto A = *It;
+	//	if (A && !A->IsPendingKill() && A != this && !A->IsA<AController>() && !A->IsA<ASCharacter>())
+	//	{
+	//		A->Reset();
+	//	}
+	//}
+	//for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
+ // //for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It && i < states.size(); It++)
+ // {
+ //   if (auto MyController = Cast<ASPlayerController>(*It))
+ //   {
+	//		RestartPlayer(MyController);
+	//		MyController->ClientHUDStateChanged(EHUDState::Playing);
+	//		//if (auto MyPawn = Cast<ASCharacter>(MyController->GetPawn())) {
+	//		//	MyPawn->InitState();
+	//		//}
+ //     //if (auto PS = Cast<ASPlayerState>(MyController->PlayerState)) {
+ //       //PS->PlayerTypeIndex = states[i].PlayerTypeIndex;
+ //       //PS->PlayerLevel = states[i].PlayerLevel;
+ //       //PS->PlayerSkillPointsAvailable = states[i].PlayerSkillPointsAvailable;
+ //       //PS->PlayerTalentLevels = states[i].PlayerTalentLevels;
+ //       //PS->PlayerXP = states[i].PlayerXP;
+ //       
+ //       //++i;
+ //     //}
+ //   }
+ // }
+	//bReadyToStart = false;
+	////SetMatchState(MatchState::WaitingToStart);
+	//StartMatch();
 }
 

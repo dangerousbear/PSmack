@@ -69,6 +69,8 @@ protected:
 	/* The start time for the gamemode */
 	int32 TimeOfDayStart;
 
+	int32 DayIndex;
+
 	/* The enemy pawn class */
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	TSubclassOf<class APawn> BotPawnClass;

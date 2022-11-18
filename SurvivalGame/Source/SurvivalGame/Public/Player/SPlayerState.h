@@ -51,6 +51,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Player")
 	void SetPlayerTypeIndex(int32 Index);
 
+	UFUNCTION(BlueprintCallable, Category = "Player")
+  int32 GetPlayerTypeIndex();
+
 	void CopyProperties(APlayerState* PlayerState) override;
 
   UPROPERTY(Transient, Replicated)

@@ -62,7 +62,6 @@ void ASPlayerController::StartSpectating()
 	ClientHUDStateChanged(EHUDState::Spectating);
 }
 
-
 void ASPlayerController::Suicide()
 {
 	if (IsInState(NAME_Playing))

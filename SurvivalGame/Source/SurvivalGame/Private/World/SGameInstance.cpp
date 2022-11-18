@@ -3,3 +3,10 @@
 
 #include "World/SGameInstance.h"
 
+void USGameInstance::SetPlayerTypeIndex(int32 Index) {
+  PlayerTypeIndex = Index;
+}
+
+int32 USGameInstance::GetPlayerTypeIndex() {
+  return PlayerTypeIndex;
+}

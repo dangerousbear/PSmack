@@ -46,6 +46,7 @@ ASGameMode::ASGameMode()
 	// You may want to make this number dynamic as players survived multiple nights
 	MaxPawnsInZone = 20;
   bReadyToStart = false;
+  DayIndex = 0;
 }
 
 
@@ -104,7 +105,7 @@ void ASGameMode::DefaultTimer()
 		if (MyGameState)
 		{
 			/* Increment our time of day */
-			MyGameState->ElapsedGameMinutes += MyGameState->GetTimeOfDayIncrement();
+			MyGameState->ElapsedGameMinutes += 3 * MyGameState->GetTimeOfDayIncrement();
 
 			/* Determine our state */
 			MyGameState->GetAndUpdateIsNight();
@@ -113,6 +114,9 @@ void ASGameMode::DefaultTimer()
 			bool CurrentIsNight = MyGameState->GetIsNight();
 			if (CurrentIsNight != LastIsNight)
 			{
+        if (!CurrentIsNight) {
+          DayIndex++;
+        }
 				EHUDMessage MessageID = CurrentIsNight ? EHUDMessage::Game_SurviveStart : EHUDMessage::Game_SurviveEnded;
 				MyGameState->BroadcastGameMessage(MessageID);
 
@@ -424,7 +428,6 @@ void ASGameMode::SpawnDefaultInventory(APawn* PlayerPawn)
 		}
 	}
 }
-
 
 /************************************************************************/
 /* Modding & Mutators                                                   */

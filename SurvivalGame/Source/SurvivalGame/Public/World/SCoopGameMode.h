@@ -26,6 +26,7 @@ class SURVIVALGAME_API ASCoopGameMode : public ASGameMode
 
 	/* Spawn the player next to his living coop buddy instead of a PlayerStart */
 	virtual void RestartPlayer(class AController* NewPlayer) override;
+	void RestartPlayerInner(class AController* NewPlayer);
 
 	virtual void OnNightEnded() override;
 
@@ -44,4 +45,9 @@ class SURVIVALGAME_API ASCoopGameMode : public ASGameMode
 	int32 ScoreNightSurvived;
 
 	FTimerHandle TimerHandle_ResetTimer;
+
+  public:
+		UFUNCTION(BlueprintCallable, Category = "Score")
+		void RespawnPlayers();
+
 };

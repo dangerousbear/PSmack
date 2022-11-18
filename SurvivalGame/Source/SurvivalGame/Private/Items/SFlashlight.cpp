@@ -30,7 +30,7 @@ ASFlashlight::ASFlashlight()
 	LastEmissiveStrength = -1.0f;
 
 	EmissiveParamName = TEXT("Brightness");
-	MaxEmissiveIntensity = 5.0f;
+	MaxEmissiveIntensity = 2000.0f;
 
 	/* Doesn't consume "Ammo" */
 	StartAmmo = 0;

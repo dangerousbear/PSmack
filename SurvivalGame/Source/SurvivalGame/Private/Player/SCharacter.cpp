@@ -69,12 +69,13 @@ ASCharacter::ASCharacter(const class FObjectInitializer& ObjectInitializer)
 	MaxHunger = 100;
 	Hunger = 0;
 	XP = 0;
-	Level = 1;
+	Level = -10;
   bIsTalentTreeOpen = false;
   TalentLevels = TArray<int32>();
   for (size_t i = 0; i < 20; ++i) {
     TalentLevels.Add(0);
   }
+
 
 	/* Names as specified in the character skeleton */
 	WeaponAttachPoint = TEXT("WeaponSocket");
@@ -93,23 +94,48 @@ void ASCharacter::BeginPlay()
 		FTimerHandle Handle;
 		GetWorldTimerManager().SetTimer(Handle, this, &ASCharacter::IncrementHunger, IncrementHungerInterval, true);
 	}
-	FTimerHandle Handle2;
-	GetWorldTimerManager().SetTimer(Handle2, this, &ASCharacter::InitState, 0.1, false);
+	//InitState();
+	//FTimerHandle Handle2;
+	//GetWorldTimerManager().SetTimer(Handle2, this, &ASCharacter::InitState, 0.1, false);
 }
 
 void ASCharacter::InitState() {
-	if (auto PS = Cast<ASPlayerState>(GetPlayerState())) {
-		Level = PS->PlayerTypeIndex;
-		PlayerTypeIndex = PS->PlayerTypeIndex;
-		XP = PS->PlayerXP;
-		const auto talentLevels = PS->PlayerTalentLevels; // Deliberate copy
-		for (size_t i = 0; i < talentLevels.Num(); ++i) {
-			PS->PlayerTalentLevels[i] = 0;
-			for (size_t n = 0; n < talentLevels[i]; ++n) {
-				IncrementTalent(i);
-			}
-		}
-	}
+  //if (auto PController = Cast<ASPlayerController>(GetController())) {
+  //  if (auto PS = Cast<ASPlayerState>(PController->PlayerState)) {
+  //    //Health = 50.0;
+  //    Level = PS->PlayerLevel;
+  //    PlayerTypeIndex = PS->PlayerTypeIndex;
+  //    XP = PS->PlayerXP;
+  //    SkillPointsAvailable = PS->PlayerSkillPointsAvailable;
+  //    const auto talentLevels = PS->PlayerTalentLevels; // Deliberate copy
+  //    for (size_t i = 0; i < talentLevels.Num(); ++i) {
+  //      PS->PlayerTalentLevels[i] = 0;
+  //      for (size_t n = 0; n < talentLevels[i]; ++n) {
+  //        IncrementTalent(i);
+  //      }
+  //    }
+  //  }
+  //}
+  if (auto World = GetWorld()) {
+    if (auto GameInstance = Cast<USGameInstance>(World->GetGameInstance())) {
+      //Level = GameInstance->PlayerTypeIndex; // TODO:CHange back
+      Level = GameInstance->PlayerLevel;
+      PlayerTypeIndex = GameInstance->PlayerTypeIndex;
+			XP = GameInstance->PlayerXP;
+			SkillPointsAvailable = GameInstance->PlayerSkillPointsAvailable;
+      const auto talentLevels = GameInstance->PlayerTalentLevels; // Deliberate copy
+      for (size_t i = 0; i < talentLevels.Num(); ++i) {
+        GameInstance->PlayerTalentLevels[i] = 0;
+        for (size_t n = 0; n < talentLevels[i]; ++n) {
+          IncrementTalent(i);
+        }
+      }
+    }
+  }
+  if (auto PController = Cast<ASPlayerController>(GetController())) {
+		PController->ClientHUDStateChanged(EHUDState::Playing);
+  }
+
 }
 
 
@@ -504,6 +530,12 @@ void ASCharacter::LevelUp() {
       PS->PlayerLevel = Level;
       PS->PlayerXP = XP;
     }
+    if (auto World = GetWorld()) {
+      if (auto GameInstance = Cast<USGameInstance>(World->GetGameInstance())) {
+        GameInstance->PlayerLevel = Level;
+        GameInstance->PlayerXP = XP;
+      }
+    }
   }
   if (auto PC = Cast<ASPlayerController>(Controller))
   {
@@ -516,6 +548,11 @@ void ASCharacter::SetSkillPointsAvailable(const int N) {
   if (auto PS = Cast<ASPlayerState>(GetPlayerState())) {
     PS->PlayerSkillPointsAvailable = N;
   }
+	if (auto World = GetWorld()) {
+		if (auto GameInstance = Cast<USGameInstance>(World->GetGameInstance())) {
+			GameInstance->PlayerSkillPointsAvailable = N;
+		}
+	}
 }
 
 int ASCharacter::GetSkillPointsAvailable() const {
@@ -569,6 +606,18 @@ void ASCharacter::IncrementTalent(int Index) {
     }
     ++GITalentLevels[Index];
   }
+	if (auto World = GetWorld()) {
+		if (auto GameInstance = Cast<USGameInstance>(World->GetGameInstance())) {
+			auto& GITalentLevels = GameInstance->PlayerTalentLevels;
+			if (GITalentLevels.Num() == 0) {
+				GITalentLevels = TArray<int32>();
+				for (size_t i = 0; i < 20; ++i) {
+					GITalentLevels.Add(0);
+				}
+			}
+			++GITalentLevels[Index];
+		}
+	}
 }
 
 void ASCharacter::LifeStealFromDamage(float Damage) {
