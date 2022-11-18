@@ -105,7 +105,7 @@ void ASGameMode::DefaultTimer()
 		if (MyGameState)
 		{
 			/* Increment our time of day */
-			MyGameState->ElapsedGameMinutes += 6 * MyGameState->GetTimeOfDayIncrement();
+			MyGameState->ElapsedGameMinutes += MyGameState->GetTimeOfDayIncrement();
 
 			/* Determine our state */
 			MyGameState->GetAndUpdateIsNight();
@@ -149,6 +149,12 @@ void ASGameMode::DefaultTimer()
             break;
           case 9:
             MyGameState->BroadcastGameMessage(EHUDMessage::Game_Night9);
+						for (TActorIterator<APawn> It(GetWorld()); It; ++It)
+						{
+							if (auto Pawn = Cast<ASZombieCharacter>(*It)) {
+								Pawn->Destroy();
+							}
+						}
             break;
           default:
             MyGameState->BroadcastGameMessage(EHUDMessage::Game_SurviveEnded);
@@ -359,22 +365,35 @@ void ASGameMode::SpawnNewBot()
 				NewZombie->ScaleSpeed(1.2);
 				break;
 			case 2:
-				NewZombie->ScaleSpeed(2.0);
+				NewZombie->ScaleSpeed(3.0);
 				NewZombie->ScaleHealth(0.5);
+				NewZombie->ScaleDamage(0.75);
 				break;
 			case 3:
+				NewZombie->ScaleSpeed(4.0);
+				NewZombie->ScaleDamage(0.5);
 				break;
 			case 4:
+				NewZombie->ScaleSpeed(6.0);
+				NewZombie->ScaleHealth(0.5);
+				NewZombie->ScaleDamage(0.75);
 				break;
 			case 5:
 				break;
 			case 6:
 				break;
 			case 7:
+				NewZombie->ScaleSpeed(0.8);
+				NewZombie->ScaleDamage(1.5);
+				NewZombie->ScaleHealth(2.0);
 				break;
 			case 8:
+				NewZombie->ScaleHealth(0.7);
 				break;
 			case 9:
+				NewZombie->ScaleHealth(50.0);
+				NewZombie->ScaleDamage(5.0);
+				NewZombie->ScaleSpeed(5.0);
 				break;
 			default:
 				break;
@@ -480,16 +499,28 @@ void ASGameMode::SetParametersForDay() {
 		BotSpawnInterval = 0.35f;
 		break;
 	case 4:
+		MaxPawnsInZone = 40;
+		BotSpawnInterval = 0.35f;
 		break;
 	case 5:
+		MaxPawnsInZone = 70;
+		BotSpawnInterval = 0.20f;
 		break;
 	case 6:
+		MaxPawnsInZone = 50;
+		BotSpawnInterval = 0.35f;
 		break;
 	case 7:
+		MaxPawnsInZone = 80;
+		BotSpawnInterval = 0.35f;
 		break;
 	case 8:
+		MaxPawnsInZone = 200;
+		BotSpawnInterval = 0.15f;
 		break;
 	case 9:
+		MaxPawnsInZone = 1;
+		BotSpawnInterval = 5.0f;
 		break;
 	default:
 		break;

@@ -158,7 +158,7 @@ void ASCoopGameMode::Killed(AController* Killer, AController* VictimPlayer, APaw
 		for (TActorIterator<APawn> It(GetWorld()); It; ++It)
 		{
 			if (auto Player = Cast<ASCharacter>(*It)) {
-				Player->IncrementXP(5.0);
+				Player->IncrementXP(8.0);
 			}
 		}
 	}

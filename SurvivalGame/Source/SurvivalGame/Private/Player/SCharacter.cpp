@@ -338,7 +338,6 @@ void ASCharacter::OnEndTargeting()
 
 void ASCharacter::OnJump()
 {
-  IncrementXP(300.0);
 	SetIsJumping(true);
 }
 
@@ -630,7 +629,7 @@ void ASCharacter::IncrementTalent(int Index) {
 
 void ASCharacter::LifeStealFromDamage(float Damage) {
   IncrementXP(0.002 * Damage);
-  Health = FMath::Clamp(Health + Damage * TalentLevels[2] * 0.1f, 0.0f, GetMaxHealth());
+  Health = FMath::Clamp(Health + Damage * TalentLevels[2] * 0.01f, 0.0f, GetMaxHealth());
 }
 
 void ASCharacter::OnDeath(float KillingDamage, FDamageEvent const& DamageEvent, APawn* PawnInstigator, AActor* DamageCauser)
