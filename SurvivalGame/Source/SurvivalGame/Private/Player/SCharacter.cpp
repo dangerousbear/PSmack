@@ -58,7 +58,7 @@ ASCharacter::ASCharacter(const class FObjectInitializer& ObjectInitializer)
 	DropWeaponMaxDistance = 100;
 	bHasNewFocus = true;
 	TargetingSpeedModifier = 0.5f;
-	SprintingSpeedModifier = 1.5f;
+	SprintingSpeedModifier = 2.5f;
 
 	Health = 100;
 
