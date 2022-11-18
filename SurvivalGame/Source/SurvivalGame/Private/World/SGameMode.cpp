@@ -105,7 +105,7 @@ void ASGameMode::DefaultTimer()
 		if (MyGameState)
 		{
 			/* Increment our time of day */
-			MyGameState->ElapsedGameMinutes += 3 * MyGameState->GetTimeOfDayIncrement();
+			MyGameState->ElapsedGameMinutes += 6 * MyGameState->GetTimeOfDayIncrement();
 
 			/* Determine our state */
 			MyGameState->GetAndUpdateIsNight();
@@ -116,10 +116,47 @@ void ASGameMode::DefaultTimer()
 			{
         if (!CurrentIsNight) {
           DayIndex++;
+          MyGameState->BroadcastGameMessage(EHUDMessage::Game_SurviveEnded);
         }
-				EHUDMessage MessageID = CurrentIsNight ? EHUDMessage::Game_SurviveStart : EHUDMessage::Game_SurviveEnded;
-				MyGameState->BroadcastGameMessage(MessageID);
-
+        else {
+          switch (DayIndex) {
+          case 0:
+            MyGameState->BroadcastGameMessage(EHUDMessage::Game_Night0);
+            break;
+          case 1:
+            MyGameState->BroadcastGameMessage(EHUDMessage::Game_Night1);
+            break;
+          case 2:
+            MyGameState->BroadcastGameMessage(EHUDMessage::Game_Night2);
+            break;
+          case 3:
+            MyGameState->BroadcastGameMessage(EHUDMessage::Game_Night3);
+            break;
+          case 4:
+            MyGameState->BroadcastGameMessage(EHUDMessage::Game_Night4);
+            break;
+          case 5:
+            MyGameState->BroadcastGameMessage(EHUDMessage::Game_Night5);
+            break;
+          case 6:
+            MyGameState->BroadcastGameMessage(EHUDMessage::Game_Night6);
+            break;
+          case 7:
+            MyGameState->BroadcastGameMessage(EHUDMessage::Game_Night7);
+            break;
+          case 8:
+            MyGameState->BroadcastGameMessage(EHUDMessage::Game_Night8);
+            break;
+          case 9:
+            MyGameState->BroadcastGameMessage(EHUDMessage::Game_Night9);
+            break;
+          default:
+            MyGameState->BroadcastGameMessage(EHUDMessage::Game_SurviveEnded);
+            break;
+          }
+        }
+        SetParametersForDay();
+        
 				/* The night just ended, respawn all dead players */
 				if (!CurrentIsNight)
 				{
@@ -313,7 +350,35 @@ void ASGameMode::SpawnNewBot()
   auto NewBot = GetWorld()->SpawnActor<APawn>(BotPawnClass, SpawnTransform);
   if (auto NewZombie = Cast<ASZombieCharacter>(NewBot)) {
     if (auto MyGameState = Cast<ASGameState>(GameState)) {
-      NewZombie->SetPowerScale(1.0 + 0.2 * MyGameState->ElapsedGameMinutes / 720.0);
+      NewZombie->SetPowerScale(1.0 + 0.2 * DayIndex);
+
+			switch (DayIndex) {
+			case 0:
+				break;
+			case 1:
+				NewZombie->ScaleSpeed(1.2);
+				break;
+			case 2:
+				NewZombie->ScaleSpeed(2.0);
+				NewZombie->ScaleHealth(0.5);
+				break;
+			case 3:
+				break;
+			case 4:
+				break;
+			case 5:
+				break;
+			case 6:
+				break;
+			case 7:
+				break;
+			case 8:
+				break;
+			case 9:
+				break;
+			default:
+				break;
+			}
     }
   }
 }
@@ -390,6 +455,47 @@ void ASGameMode::SpawnBotHandler()
 			}
 		}
 	}
+}
+
+int32 ASGameMode::GetDayIndex() {
+  return DayIndex;
+};
+void ASGameMode::SetParametersForDay() {
+  MaxPawnsInZone = 20;
+	BotSpawnInterval = 0.5f;
+
+	switch (DayIndex) {
+	case 0:
+		break;
+	case 1:
+		MaxPawnsInZone = 30;
+		BotSpawnInterval = 0.4f;
+		break;
+	case 2:
+		MaxPawnsInZone = 40;
+		BotSpawnInterval = 0.3f;
+		break;
+	case 3:
+		MaxPawnsInZone = 50;
+		BotSpawnInterval = 0.35f;
+		break;
+	case 4:
+		break;
+	case 5:
+		break;
+	case 6:
+		break;
+	case 7:
+		break;
+	case 8:
+		break;
+	case 9:
+		break;
+	default:
+		break;
+	}
+
+
 }
 
 

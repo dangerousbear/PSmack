@@ -114,7 +114,10 @@ public:
 	/* Change default bot type during gameplay */
 	void SetBotType(EBotBehaviorType NewType);
 
-  void SetPowerScale(float Scale);
+	void SetPowerScale(float Scale);
+	void ScaleSpeed(float Scale);
+	void ScaleHealth(float Scale);
+	void ScaleDamage(float Scale);
 
 	UFUNCTION(BlueprintCallable, Category = "PlayerCondition")
 	float GetPowerScale();

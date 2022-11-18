@@ -202,9 +202,22 @@ void ASZombieCharacter::SetBotType(EBotBehaviorType NewType)
 void ASZombieCharacter::SetPowerScale(float Scale)
 {
 	Health *= Scale;
-  //MeleeDamage *= 0.5 * (1.0 + Scale);
   SprintingSpeedModifier *= Scale;
 	PawnSensingComp->HearingThreshold *= Scale;
+  const auto LowerScale = 1.0 + 0.2 * (Scale - 1.0);
+	MeleeDamage *= LowerScale;
+}
+
+void ASZombieCharacter::ScaleSpeed(float Scale) {
+	SprintingSpeedModifier *= Scale;
+}
+
+void ASZombieCharacter::ScaleHealth(float Scale) {
+	Health *= Scale;
+}
+
+void ASZombieCharacter::ScaleDamage(float Scale) {
+	MeleeDamage *= Scale;
 }
 
 float ASZombieCharacter::GetPowerScale()

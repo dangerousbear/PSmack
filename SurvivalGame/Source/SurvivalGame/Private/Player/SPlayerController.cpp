@@ -109,6 +109,16 @@ void ASPlayerController::ClientHUDMessage_Implementation(EHUDMessage MessageID)
 	}
 }
 
+bool ASPlayerController::IsPlaying()
+{
+  ASHUD* HUD = Cast<ASHUD>(GetHUD());
+  if (HUD)
+  {
+    return HUD->GetCurrentState() == EHUDState::Playing;
+  }
+  return false;
+}
+
 
 void ASPlayerController::ServerSendChatMessage_Implementation(class APlayerState* Sender, const FString& Message)
 {
@@ -152,6 +162,26 @@ FText ASPlayerController::GetText(EHUDMessage MsgID) const
 		return LOCTEXT("GameNightStart", "SURVIVE THE NIGHT");
 	case EHUDMessage::Game_SurviveEnded:
 		return LOCTEXT("GameNightEnd", "Night survived! Prepare for the coming night.");
+	case EHUDMessage::Game_Night0:
+		return LOCTEXT("GameNightStart", "FIRST NIGHT, MANY POLAKS");
+	case EHUDMessage::Game_Night1:
+		return LOCTEXT("GameNightStart", "SECOND NIGHT, MANY POLAKS THAT HAVE DRINKED BLACK ENERGY");
+	case EHUDMessage::Game_Night2:
+		return LOCTEXT("GameNightStart", "THIRD NIGHT, HORSE POLAK");
+	case EHUDMessage::Game_Night3:
+		return LOCTEXT("GameNightStart", "FOURTH NIGHT, SMALL POLAK");
+	case EHUDMessage::Game_Night4:
+		return LOCTEXT("GameNightStart", "FIFTH NIGHT, HORSE POLAK THAT HAVE DRINK BLACK ENERGY");
+	case EHUDMessage::Game_Night5:
+		return LOCTEXT("GameNightStart", "SIXTH NIGHT, MANY MANY POLAK");
+	case EHUDMessage::Game_Night6:
+		return LOCTEXT("GameNightStart", "SEVENTH NIGHT, CHAOS POLAK");
+	case EHUDMessage::Game_Night7:
+		return LOCTEXT("GameNightStart", "EIGHTH NIGHT, COOL CLUB");
+	case EHUDMessage::Game_Night8:
+		return LOCTEXT("GameNightStart", "NINTH NIGHT, ALL POLAK OF THE UNIVERSE");
+	case EHUDMessage::Game_Night9:
+		return LOCTEXT("GameNightStart", "TENTH NIGHT, TRUE SPIRIT OF POLAND");
 	default:
 		UE_LOG(LogGame, Warning, TEXT("No Message set for enum value in SPlayerContoller::GetText(). "))
 		return FText::FromString("No Message Set");

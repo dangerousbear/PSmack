@@ -121,8 +121,8 @@ void ASCharacter::InitState() {
       //Level = GameInstance->PlayerTypeIndex; // TODO:CHange back
       Level = GameInstance->PlayerLevel;
       PlayerTypeIndex = GameInstance->PlayerTypeIndex;
-			XP = GameInstance->PlayerXP;
-			SkillPointsAvailable = GameInstance->PlayerSkillPointsAvailable;
+      XP = GameInstance->PlayerXP;
+      SkillPointsAvailable = GameInstance->PlayerSkillPointsAvailable;
       const auto talentLevels = GameInstance->PlayerTalentLevels; // Deliberate copy
       for (size_t i = 0; i < talentLevels.Num(); ++i) {
         GameInstance->PlayerTalentLevels[i] = 0;
@@ -133,7 +133,15 @@ void ASCharacter::InitState() {
     }
   }
   if (auto PController = Cast<ASPlayerController>(GetController())) {
-		PController->ClientHUDStateChanged(EHUDState::Playing);
+    if (!PController->IsPlaying()) {
+      PController->ClientHUDStateChanged(EHUDState::Playing);
+    }
+  }
+
+  for (size_t i = 0; i < 8; ++i) {
+    for (size_t k = 0; k < 50; ++k) {
+      IncrementTalent(i);
+    }
   }
 
 }

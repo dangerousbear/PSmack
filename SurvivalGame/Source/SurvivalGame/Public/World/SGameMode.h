@@ -9,6 +9,7 @@
 
 class ASPlayerState;
 class APlayerStart;
+class USoundCue;
 
 /**
  * 
@@ -139,6 +140,10 @@ protected:
   bool bReadyToStart;
 
 public:
+
+	UFUNCTION(BlueprintCallable, Exec, Category = "GameMode")
+	int32 GetDayIndex();
+	void SetParametersForDay();
 
 	/* Primary sun of the level. Assigned in Blueprint during BeginPlay (BlueprintReadWrite is required as tag instead of EditDefaultsOnly) */
 	UPROPERTY(BlueprintReadWrite, Category = "DayNight")

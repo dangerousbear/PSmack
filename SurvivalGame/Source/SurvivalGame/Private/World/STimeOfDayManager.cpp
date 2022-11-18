@@ -76,13 +76,48 @@ void ASTimeOfDayManager::Tick(float DeltaSeconds)
 		}
 
 		bool CurrentNightState = MyGameState->GetIsNight();
-		if (CurrentNightState != LastNightState)
-		{
-			if (CurrentNightState)
-			{
-				UGameplayStatics::PlaySound2D(this, SoundNightStarted);
-				TargetSunBrightness = 0.01f;
-			}
+    if (CurrentNightState != LastNightState)
+    {
+      if (CurrentNightState)
+      {
+        UGameplayStatics::PlaySound2D(this, SoundNightStarted);
+        TargetSunBrightness = 0.01f;
+
+        switch (MyGameState->GetElapsedDays()) {
+        case 0:
+          UGameplayStatics::PlaySound2D(this, SoundNight0);
+          break;
+        case 1:
+          UGameplayStatics::PlaySound2D(this, SoundNight1);
+          break;
+        case 2:
+          UGameplayStatics::PlaySound2D(this, SoundNight2);
+          break;
+        case 3:
+          UGameplayStatics::PlaySound2D(this, SoundNight3);
+          break;
+        case 4:
+          UGameplayStatics::PlaySound2D(this, SoundNight4);
+          break;
+        case 5:
+          UGameplayStatics::PlaySound2D(this, SoundNight5);
+          break;
+        case 6:
+          UGameplayStatics::PlaySound2D(this, SoundNight6);
+          break;
+        case 7:
+          UGameplayStatics::PlaySound2D(this, SoundNight7);
+          break;
+        case 8:
+          UGameplayStatics::PlaySound2D(this, SoundNight8);
+          break;
+        case 9:
+          UGameplayStatics::PlaySound2D(this, SoundNight9);
+          break;
+        default:
+          break;
+        }
+      }
 			else
 			{
 				UGameplayStatics::PlaySound2D(this, SoundNightEnded);

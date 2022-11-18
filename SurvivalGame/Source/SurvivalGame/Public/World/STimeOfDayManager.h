@@ -75,4 +75,26 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sound")
 	USoundCue* AmbientNight;
+
+
+  UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    USoundCue* SoundNight0;
+  UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    USoundCue* SoundNight1;
+  UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    USoundCue* SoundNight2;
+  UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    USoundCue* SoundNight3;
+  UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    USoundCue* SoundNight4;
+  UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    USoundCue* SoundNight5;
+  UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    USoundCue* SoundNight6;
+  UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    USoundCue* SoundNight7;
+  UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    USoundCue* SoundNight8;
+  UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    USoundCue* SoundNight9;
 };

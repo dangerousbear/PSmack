@@ -20,6 +20,16 @@ enum class EHUDMessage : uint8
 	/* Gamemode */
 	Game_SurviveStart,
 	Game_SurviveEnded,
+	Game_Night0,
+	Game_Night1,
+	Game_Night2,
+	Game_Night3,
+	Game_Night4,
+	Game_Night5,
+	Game_Night6,
+	Game_Night7,
+	Game_Night8,
+	Game_Night9,
 
 
 
@@ -66,6 +76,7 @@ public:
 	void ClientHUDMessage(EHUDMessage MessageID);
 
 	void ClientHUDMessage_Implementation(EHUDMessage MessageID);
+	bool IsPlaying();
 
 	FText GetText(EHUDMessage MsgID) const;
 
