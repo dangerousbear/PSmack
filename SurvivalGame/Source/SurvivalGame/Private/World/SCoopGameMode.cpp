@@ -220,7 +220,7 @@ void ASCoopGameMode::FinishMatch()
 				MyController->ClientHUDStateChanged(EHUDState::MatchEnd);
 			}
 		}
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle_ResetTimer, this, &ASCoopGameMode::ResetMatch, 1.0, false);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_ResetTimer, this, &ASCoopGameMode::ResetMatch, 10.0, false);
 	}
 }
 
@@ -259,7 +259,7 @@ void ASCoopGameMode::ResetMatch() {
 	{
 		MyGameState->ElapsedGameMinutes = TimeOfDayStart;
 	}
-  DayIndex = 0;
+  DayIndex = -1;
 
 
 
