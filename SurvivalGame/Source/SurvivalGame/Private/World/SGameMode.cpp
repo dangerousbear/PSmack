@@ -115,11 +115,16 @@ void ASGameMode::DefaultTimer()
 			if (CurrentIsNight != LastIsNight)
 			{
         if (!CurrentIsNight) {
-          DayIndex++;
           MyGameState->BroadcastGameMessage(EHUDMessage::Game_SurviveEnded);
         }
         else {
-          switch (DayIndex) {
+					for (TActorIterator<APawn> It(GetWorld()); It; ++It)
+					{
+						if (auto Pawn = Cast<ASZombieCharacter>(*It)) {
+							Pawn->Destroy();
+						}
+					}
+          switch (MyGameState->GetElapsedDays()) {
           case 0:
             MyGameState->BroadcastGameMessage(EHUDMessage::Game_Night0);
             break;
@@ -149,12 +154,6 @@ void ASGameMode::DefaultTimer()
             break;
           case 9:
             MyGameState->BroadcastGameMessage(EHUDMessage::Game_Night9);
-						for (TActorIterator<APawn> It(GetWorld()); It; ++It)
-						{
-							if (auto Pawn = Cast<ASZombieCharacter>(*It)) {
-								Pawn->Destroy();
-							}
-						}
             break;
           default:
             MyGameState->BroadcastGameMessage(EHUDMessage::Game_SurviveEnded);
@@ -356,9 +355,10 @@ void ASGameMode::SpawnNewBot()
   auto NewBot = GetWorld()->SpawnActor<APawn>(BotPawnClass, SpawnTransform);
   if (auto NewZombie = Cast<ASZombieCharacter>(NewBot)) {
     if (auto MyGameState = Cast<ASGameState>(GameState)) {
-      NewZombie->SetPowerScale(1.0 + 0.2 * DayIndex);
+      const auto NumDays = MyGameState->GetElapsedDays();
+      NewZombie->SetPowerScale(1.0 + 0.2 * NumDays);
 
-			switch (DayIndex) {
+			switch (NumDays) {
 			case 0:
 				break;
 			case 1:
@@ -481,7 +481,11 @@ int32 ASGameMode::GetDayIndex() {
 };
 void ASGameMode::SetParametersForDay() {
   MaxPawnsInZone = 20;
-	BotSpawnInterval = 0.5f;
+  BotSpawnInterval = 0.5f;
+  auto NumDays = 0;
+  if (auto MyGameState = Cast<ASGameState>(GameState)) {
+    NumDays = MyGameState->GetElapsedDays();
+  }
 
 	switch (DayIndex) {
 	case 0:
@@ -525,8 +529,10 @@ void ASGameMode::SetParametersForDay() {
 	default:
 		break;
 	}
-
-
+	if (NumDays > 10) {
+		MaxPawnsInZone = 10 * NumDays;
+		BotSpawnInterval = 2.0 / float(NumDays);
+	}
 }
 
 

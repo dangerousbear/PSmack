@@ -259,19 +259,6 @@ void ASCoopGameMode::ResetMatch() {
 	{
 		MyGameState->ElapsedGameMinutes = TimeOfDayStart;
 	}
-  DayIndex = -1;
-
-
-
-
-
-
-
-
-
-
-
-
 
   //Store state, reset, set state
   //struct SavedState {

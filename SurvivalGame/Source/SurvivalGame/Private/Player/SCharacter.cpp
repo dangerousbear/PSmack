@@ -459,7 +459,7 @@ float ASCharacter::GetXP() const
 
 float ASCharacter::GetMaxXPForLevel() const
 {
-	return 200.0 + 10 * Level;
+	return 200.0;
 }
 
 int ASCharacter::GetLevel() const
@@ -628,7 +628,7 @@ void ASCharacter::IncrementTalent(int Index) {
 }
 
 void ASCharacter::LifeStealFromDamage(float Damage) {
-  IncrementXP(0.002 * Damage);
+  IncrementXP(0.01 * Damage);
   Health = FMath::Clamp(Health + Damage * TalentLevels[2] * 0.01f, 0.0f, GetMaxHealth());
 }
 
