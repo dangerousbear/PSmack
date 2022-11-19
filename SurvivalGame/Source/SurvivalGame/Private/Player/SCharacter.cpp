@@ -138,11 +138,11 @@ void ASCharacter::InitState() {
     }
   }
 
-  for (size_t i = 0; i < 8; ++i) {
-    for (size_t k = 0; k < 50; ++k) {
-      IncrementTalent(i);
-    }
-  }
+  //for (size_t i = 0; i < 8; ++i) {
+  //  for (size_t k = 0; k < 50; ++k) {
+  //    IncrementTalent(i);
+  //  }
+  //}
 
 }
 
